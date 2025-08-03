@@ -26,6 +26,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
     ...blogUrls,
     {
+      url: 'https://agenzys.vercel.app/legal',
+      lastModified: new Date(),
+      changeFrequency: 'yearly',
+      priority: 0.3,
+    },
+    {
       url: 'https://agenzys.vercel.app/#features',
       lastModified: new Date(),
       changeFrequency: 'monthly',

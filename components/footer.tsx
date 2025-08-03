@@ -33,16 +33,20 @@ export function Footer() {
   ];
   const legals = [
     {
-      title: "Privacy Policy",
-      href: "#",
+      title: "Mentions Légales",
+      href: "/legal",
     },
     {
-      title: "Terms of Service",
-      href: "#",
+      title: "Politique de Confidentialité",
+      href: "/legal",
     },
     {
-      title: "Cookie Policy",
-      href: "#",
+      title: "CGU",
+      href: "/legal",
+    },
+    {
+      title: "CGV",
+      href: "/legal",
     },
   ];
 
