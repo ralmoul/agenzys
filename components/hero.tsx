@@ -128,7 +128,7 @@ export function Hero() {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.2, delay: 0.9 }}
-        className="relative z-20 mx-auto mt-4 mb-8 max-w-md px-4 text-center text-sm text-gray-500 dark:text-gray-400"
+        className="relative z-20 mx-auto mt-4 mb-8 max-w-md px-4 text-center text-sm text-gray-500 dark:text-gray-400 hidden md:block"
       >
         Découvrez comment votre agence peut gagner plusieurs heures par semaines, sans rien bouleverser pour votre équipe.
       </motion.p>
