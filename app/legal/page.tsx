@@ -18,83 +18,219 @@ export default function LegalPage() {
     switch(activeSection) {
       case 'mentions':
         return (
-          <div className="prose prose-lg dark:prose-invert max-w-none">
-            <h1>Mentions Légales</h1>
+          <div className="space-y-8">
+            <div className="border-b border-neutral-200 dark:border-neutral-700 pb-4">
+              <h1 className="text-3xl font-bold text-neutral-800 dark:text-white">Mentions Légales</h1>
+            </div>
             
-            <h2>Éditeur du site</h2>
-            <p>Le site Agenzys (<a href="https://agenzys.vercel.app">https://agenzys.vercel.app</a>) est édité par Thomas David Joseph Bouziza, entrepreneur individuel, dont le siège social est situé à 9 Voie de l'Ordonnée, Résidence Les Falaises, 27100 Val-de-Reuil, France.</p>
+            <div className="grid gap-6 md:gap-8">
+              <div className="bg-white dark:bg-neutral-800 rounded-lg p-6 border border-neutral-200 dark:border-neutral-700">
+                <h2 className="text-xl font-semibold text-orange-600 dark:text-orange-400 mb-4 flex items-center">
+                  <span className="w-2 h-2 bg-orange-500 rounded-full mr-3"></span>
+                  Éditeur du site
+                </h2>
+                <p className="text-neutral-600 dark:text-neutral-300 mb-4">
+                  Le site Agenzys (<a href="https://agenzys.vercel.app" className="text-orange-500 hover:underline">https://agenzys.vercel.app</a>) est édité par :
+                </p>
+                <div className="bg-neutral-50 dark:bg-neutral-900 rounded-lg p-4">
+                  <p className="font-medium text-neutral-800 dark:text-white mb-2">Thomas David Joseph Bouziza</p>
+                  <p className="text-sm text-neutral-600 dark:text-neutral-400">Entrepreneur individuel</p>
+                  <p className="text-sm text-neutral-600 dark:text-neutral-400">9 Voie de l'Ordonnée, Résidence Les Falaises</p>
+                  <p className="text-sm text-neutral-600 dark:text-neutral-400">27100 Val-de-Reuil, France</p>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                  <div className="space-y-2 text-sm">
+                    <p><span className="font-medium">SIREN :</span> 883 178 394</p>
+                    <p><span className="font-medium">SIRET :</span> 88317839400044</p>
+                    <p><span className="font-medium">Immatriculation :</span> 14/01/2025</p>
+                  </div>
+                  <div className="space-y-2 text-sm">
+                    <p><span className="font-medium">Téléphone :</span> 0652641056</p>
+                    <p><span className="font-medium">Email :</span> <a href="mailto:contact@agenzys.fr" className="text-orange-500 hover:underline">contact@agenzys.fr</a></p>
+                    <p><span className="font-medium">Début d'activité :</span> 30/04/2025</p>
+                  </div>
+                </div>
+                <div className="mt-4 p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
+                  <p className="text-sm text-neutral-700 dark:text-neutral-300">
+                    <span className="font-medium">Activité :</span> Programmation informatique, développement web, automatisation IA pour agences immobilières
+                  </p>
+                </div>
+              </div>
+
+              <div className="bg-white dark:bg-neutral-800 rounded-lg p-6 border border-neutral-200 dark:border-neutral-700">
+                <h2 className="text-xl font-semibold text-orange-600 dark:text-orange-400 mb-4 flex items-center">
+                  <span className="w-2 h-2 bg-orange-500 rounded-full mr-3"></span>
+                  Hébergeur
+                </h2>
+                <div className="bg-neutral-50 dark:bg-neutral-900 rounded-lg p-4">
+                  <p className="font-medium text-neutral-800 dark:text-white">Vercel Inc.</p>
+                  <p className="text-sm text-neutral-600 dark:text-neutral-400">340 S Lemon Ave #4133, Walnut, CA 91789, États-Unis</p>
+                  <p className="text-sm text-neutral-600 dark:text-neutral-400 mt-2">
+                    Email : <a href="mailto:support@vercel.com" className="text-orange-500 hover:underline">support@vercel.com</a>
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="bg-white dark:bg-neutral-800 rounded-lg p-6 border border-neutral-200 dark:border-neutral-700">
+                  <h3 className="text-lg font-semibold text-neutral-800 dark:text-white mb-3">Propriété intellectuelle</h3>
+                  <p className="text-neutral-600 dark:text-neutral-300 text-sm">
+                    Tous les contenus du site sont protégés par le droit d'auteur. Reproduction interdite sans autorisation.
+                  </p>
+                </div>
+
+                <div className="bg-white dark:bg-neutral-800 rounded-lg p-6 border border-neutral-200 dark:border-neutral-700">
+                  <h3 className="text-lg font-semibold text-neutral-800 dark:text-white mb-3">Contact</h3>
+                  <p className="text-neutral-600 dark:text-neutral-300 text-sm">
+                    Questions ou signalements : <a href="mailto:contact@agenzys.fr" className="text-orange-500 hover:underline">contact@agenzys.fr</a>
+                  </p>
+                </div>
+              </div>
+            </div>
             
-            <ul>
-              <li><strong>Nature de l'entreprise :</strong> Commerciale, Libérale non règlementée.</li>
-              <li><strong>SIREN :</strong> 883 178 394.</li>
-              <li><strong>SIRET (siège) :</strong> 88317839400044.</li>
-              <li><strong>Date d'immatriculation au RNE :</strong> 14/01/2025.</li>
-              <li><strong>Début d'activité :</strong> 30/04/2025.</li>
-              <li><strong>Activité principale :</strong> Programmation informatique, développement web, automatisation IA (y compris services d'automatisation pour agences immobilières).</li>
-              <li><strong>Directeur de la publication :</strong> Thomas David Joseph Bouziza.</li>
-              <li><strong>Téléphone :</strong> 0652641056.</li>
-              <li><strong>E-mail :</strong> contact@agenzys.fr (ou thomasbouziza@icloud.com pour contacts personnels).</li>
-            </ul>
-
-            <h2>Hébergeur du site</h2>
-            <p>Le site est hébergé par Vercel Inc., dont le siège social est situé à 340 S Lemon Ave #4133, Walnut, CA 91789, États-Unis.</p>
-            <ul>
-              <li><strong>Téléphone :</strong> +1 (559) 288-7060.</li>
-              <li><strong>E-mail :</strong> support@vercel.com.</li>
-            </ul>
-
-            <h2>Propriété intellectuelle</h2>
-            <p>Tous les contenus du site (textes, images, logos) sont protégés par le droit d'auteur. Toute reproduction sans autorisation est interdite.</p>
-
-            <h2>Responsabilité</h2>
-            <p>Les informations sur ce site sont fournies à titre indicatif. Agenzys ne saurait être tenu responsable des erreurs ou omissions. L'utilisation du site se fait sous la responsabilité de l'utilisateur.</p>
-
-            <h2>Données personnelles</h2>
-            <p>Conformément au RGPD, les données collectées sont traitées avec confidentialité. Pour plus de détails, consultez notre Politique de Confidentialité.</p>
-
-            <h2>Contact</h2>
-            <p>Pour toute question ou signalement de contenu illicite, contactez-nous à contact@agenzys.fr.</p>
-            
-            <p><em>Ces mentions sont accessibles en permanence et mises à jour au 04 août 2025.</em></p>
+            <div className="text-center pt-6 border-t border-neutral-200 dark:border-neutral-700">
+              <p className="text-sm text-neutral-500 dark:text-neutral-400">
+                Mis à jour le 04 août 2025
+              </p>
+            </div>
           </div>
         )
 
       case 'privacy':
         return (
-          <div className="prose prose-lg dark:prose-invert max-w-none">
-            <h1>Politique de Confidentialité</h1>
+          <div className="space-y-8">
+            <div className="border-b border-neutral-200 dark:border-neutral-700 pb-4">
+              <h1 className="text-3xl font-bold text-neutral-800 dark:text-white">Politique de Confidentialité</h1>
+              <p className="text-neutral-600 dark:text-neutral-400 mt-2">Protection de vos données personnelles conforme au RGPD</p>
+            </div>
 
-            <h2>Introduction</h2>
-            <p>Agenzys, édité par Thomas David Joseph Bouziza (SIREN 883 178 394), respecte la vie privée de ses utilisateurs et s'engage à protéger les données personnelles collectées via le site https://agenzys.vercel.app, conformément au RGPD (Règlement (UE) 2016/679). Cette politique explique comment nous collectons, utilisons et protégeons vos données.</p>
+            <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6">
+              <h2 className="text-lg font-semibold text-blue-800 dark:text-blue-400 mb-3">En résumé</h2>
+              <p className="text-blue-700 dark:text-blue-300 text-sm">
+                Nous respectons votre vie privée et protégeons vos données selon les standards RGPD. 
+                Vos données ne sont utilisées que pour nos services et ne sont jamais vendues.
+              </p>
+            </div>
 
-            <h2>Données collectées</h2>
-            <p>Nous collectons des données comme : nom, e-mail, téléphone, lors de prises de RDV ou de contacts. Ces données sont recueillies via formulaires ou cookies (avec votre consentement).</p>
+            <div className="grid gap-6">
+              <div className="bg-white dark:bg-neutral-800 rounded-lg p-6 border border-neutral-200 dark:border-neutral-700">
+                <h2 className="text-xl font-semibold text-orange-600 dark:text-orange-400 mb-4 flex items-center">
+                  <span className="w-2 h-2 bg-orange-500 rounded-full mr-3"></span>
+                  Données collectées
+                </h2>
+                <div className="bg-neutral-50 dark:bg-neutral-900 rounded-lg p-4">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                    <div className="text-center">
+                      <div className="w-8 h-8 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center mx-auto mb-2">
+                        <span className="text-orange-600 dark:text-orange-400">📧</span>
+                      </div>
+                      <p className="font-medium">Email</p>
+                      <p className="text-neutral-600 dark:text-neutral-400">Pour vous contacter</p>
+                    </div>
+                    <div className="text-center">
+                      <div className="w-8 h-8 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center mx-auto mb-2">
+                        <span className="text-orange-600 dark:text-orange-400">📱</span>
+                      </div>
+                      <p className="font-medium">Téléphone</p>
+                      <p className="text-neutral-600 dark:text-neutral-400">Pour les RDV</p>
+                    </div>
+                    <div className="text-center">
+                      <div className="w-8 h-8 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center mx-auto mb-2">
+                        <span className="text-orange-600 dark:text-orange-400">👤</span>
+                      </div>
+                      <p className="font-medium">Nom</p>
+                      <p className="text-neutral-600 dark:text-neutral-400">Identification</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-            <h2>Finalités du traitement</h2>
-            <ul>
-              <li>Gérer les demandes de RDV et diagnostics.</li>
-              <li>Améliorer nos services d'automatisation.</li>
-              <li>Envoyer des informations sur nos offres (avec opt-in).</li>
-            </ul>
-            <p><strong>Base légale :</strong> consentement, exécution d'un contrat ou intérêt légitime.</p>
+              <div className="bg-white dark:bg-neutral-800 rounded-lg p-6 border border-neutral-200 dark:border-neutral-700">
+                <h2 className="text-xl font-semibold text-orange-600 dark:text-orange-400 mb-4 flex items-center">
+                  <span className="w-2 h-2 bg-orange-500 rounded-full mr-3"></span>
+                  Utilisation des données
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg">
+                    <h3 className="font-medium text-green-800 dark:text-green-400 mb-2">RDV & Diagnostics</h3>
+                    <p className="text-sm text-green-700 dark:text-green-300">Gérer vos demandes et planifier les interventions</p>
+                  </div>
+                  <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
+                    <h3 className="font-medium text-blue-800 dark:text-blue-400 mb-2">Amélioration</h3>
+                    <p className="text-sm text-blue-700 dark:text-blue-300">Optimiser nos services d'automatisation</p>
+                  </div>
+                  <div className="bg-purple-50 dark:bg-purple-900/20 p-4 rounded-lg">
+                    <h3 className="font-medium text-purple-800 dark:text-purple-400 mb-2">Communication</h3>
+                    <p className="text-sm text-purple-700 dark:text-purple-300">Informations sur nos offres (avec votre accord)</p>
+                  </div>
+                </div>
+              </div>
 
-            <h2>Destinataires des données</h2>
-            <p>Les données sont accessibles à notre équipe interne et à des sous-traitants (ex. : hébergeur Vercel). Pas de transfert hors UE sans garanties adéquates.</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="bg-white dark:bg-neutral-800 rounded-lg p-6 border border-neutral-200 dark:border-neutral-700">
+                  <h3 className="text-lg font-semibold text-neutral-800 dark:text-white mb-3 flex items-center">
+                    <span className="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
+                    Conservation
+                  </h3>
+                  <div className="bg-neutral-50 dark:bg-neutral-900 rounded-lg p-3">
+                    <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                      <span className="font-medium text-blue-600 dark:text-blue-400">3 ans</span> pour les prospects
+                    </p>
+                    <p className="text-xs text-neutral-500 dark:text-neutral-500 mt-1">
+                      Puis suppression ou anonymisation
+                    </p>
+                  </div>
+                </div>
 
-            <h2>Durée de conservation</h2>
-            <p>Les données sont conservées pendant 3 ans pour les prospects, puis supprimées ou anonymisées.</p>
+                <div className="bg-white dark:bg-neutral-800 rounded-lg p-6 border border-neutral-200 dark:border-neutral-700">
+                  <h3 className="text-lg font-semibold text-neutral-800 dark:text-white mb-3 flex items-center">
+                    <span className="w-2 h-2 bg-green-500 rounded-full mr-3"></span>
+                    Sécurité
+                  </h3>
+                  <div className="bg-neutral-50 dark:bg-neutral-900 rounded-lg p-3">
+                    <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                      Cryptage et mesures de protection
+                    </p>
+                    <p className="text-xs text-neutral-500 dark:text-neutral-500 mt-1">
+                      Accès sécurisé uniquement
+                    </p>
+                  </div>
+                </div>
+              </div>
 
-            <h2>Vos droits</h2>
-            <p>Vous avez le droit d'accès, de rectification, de suppression, d'opposition, de portabilité et de limitation du traitement. Contactez-nous à contact@agenzys.fr pour exercer ces droits. Vous pouvez aussi porter réclamation auprès de la CNIL (www.cnil.fr).</p>
+              <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-6">
+                <h3 className="text-lg font-semibold text-amber-800 dark:text-amber-400 mb-3">Vos droits RGPD</h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+                  <div className="text-center">
+                    <p className="font-medium text-amber-700 dark:text-amber-300">Accès</p>
+                    <p className="text-amber-600 dark:text-amber-400">Voir vos données</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="font-medium text-amber-700 dark:text-amber-300">Rectification</p>
+                    <p className="text-amber-600 dark:text-amber-400">Corriger vos données</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="font-medium text-amber-700 dark:text-amber-300">Suppression</p>
+                    <p className="text-amber-600 dark:text-amber-400">Effacer vos données</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="font-medium text-amber-700 dark:text-amber-300">Opposition</p>
+                    <p className="text-amber-600 dark:text-amber-400">Refuser le traitement</p>
+                  </div>
+                </div>
+                <div className="mt-4 text-center">
+                  <p className="text-sm text-amber-700 dark:text-amber-300">
+                    Contactez-nous : <a href="mailto:contact@agenzys.fr" className="font-medium hover:underline">contact@agenzys.fr</a>
+                  </p>
+                </div>
+              </div>
+            </div>
 
-            <h2>Sécurité</h2>
-            <p>Nous utilisons des mesures de sécurité (cryptage, etc.) pour protéger vos données contre les accès non autorisés.</p>
-
-            <h2>Cookies</h2>
-            <p>Le site utilise des cookies pour analyser le trafic. Vous pouvez les refuser via votre navigateur. Pour plus de détails, consultez notre bannière cookies.</p>
-
-            <h2>Modifications</h2>
-            <p>Cette politique peut être mise à jour. Date de dernière mise à jour : 04 août 2025.</p>
+            <div className="text-center pt-6 border-t border-neutral-200 dark:border-neutral-700">
+              <p className="text-sm text-neutral-500 dark:text-neutral-400">
+                Mis à jour le 04 août 2025 • Conforme RGPD
+              </p>
+            </div>
           </div>
         )
 
