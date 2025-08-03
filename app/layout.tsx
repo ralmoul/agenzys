@@ -9,9 +9,27 @@ import { Footer } from "@/components/footer";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Agenzys - Solutions Digitales Innovantes",
+  title: "Agenzys - Automatisation Invisible pour Agences Immobilières",
   description:
-    "Agenzys propose des solutions digitales innovantes pour votre entreprise. Services de développement web, applications mobiles et consulting digital.",
+    "Automatisez vos tâches répétitives sans changer vos habitudes. Génération de leads, relances clients et gestion documentaire pour agences immobilières. Intégration transparente à vos outils existants.",
+  keywords: "automatisation agence immobilière, leads immobilier, CRM immobilier, Hektor, Adapt Immo, Leizee, relance client automatique",
+  authors: [{ name: "Thomas Bouziza" }],
+  creator: "Agenzys",
+  publisher: "Agenzys",
+  robots: "index, follow",
+  openGraph: {
+    type: "website",
+    locale: "fr_FR",
+    url: "https://agenzys.vercel.app",
+    title: "Agenzys - Automatisation Invisible pour Agences Immobilières",
+    description: "Automatisez vos tâches répétitives sans changer vos habitudes. Génération de leads, relances clients et gestion documentaire.",
+    siteName: "Agenzys",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Agenzys - Automatisation Invisible pour Agences Immobilières",
+    description: "Automatisez vos tâches répétitives sans changer vos habitudes. Génération de leads, relances clients et gestion documentaire.",
+  },
 };
 
 export default function RootLayout({
