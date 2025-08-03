@@ -236,79 +236,243 @@ export default function LegalPage() {
 
       case 'cgu':
         return (
-          <div className="prose prose-lg dark:prose-invert max-w-none">
-            <h1>Conditions Générales d'Utilisation (CGU)</h1>
+          <div className="space-y-8">
+            <div className="border-b border-neutral-200 dark:border-neutral-700 pb-4">
+              <h1 className="text-3xl font-bold text-neutral-800 dark:text-white">Conditions Générales d'Utilisation</h1>
+              <p className="text-neutral-600 dark:text-neutral-400 mt-2">Règles d'utilisation du site Agenzys</p>
+            </div>
 
-            <h2>Préambule</h2>
-            <p>Les présentes CGU régissent l'utilisation du site Agenzys (https://agenzys.vercel.app), édité par Thomas David Joseph Bouziza (SIREN 883 178 394, siège : 9 Voie de l'Ordonnée, Résidence Les Falaises, 27100 Val-de-Reuil, France). En accédant au site, vous acceptez ces conditions sans réserve.</p>
+            <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-6">
+              <h2 className="text-lg font-semibold text-green-800 dark:text-green-400 mb-3">En utilisant ce site</h2>
+              <p className="text-green-700 dark:text-green-300 text-sm">
+                Vous acceptez automatiquement ces conditions d'utilisation. Le site est gratuit et vous permet de découvrir nos services d'automatisation.
+              </p>
+            </div>
 
-            <h2>Objet</h2>
-            <p>Le site propose des informations sur nos services d'automatisation pour agences immobilières. Il permet de prendre RDV pour un diagnostic.</p>
+            <div className="grid gap-6">
+              <div className="bg-white dark:bg-neutral-800 rounded-lg p-6 border border-neutral-200 dark:border-neutral-700">
+                <h2 className="text-xl font-semibold text-orange-600 dark:text-orange-400 mb-4 flex items-center">
+                  <span className="w-2 h-2 bg-orange-500 rounded-full mr-3"></span>
+                  Objet du site
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="bg-neutral-50 dark:bg-neutral-900 rounded-lg p-4">
+                    <h3 className="font-medium text-neutral-800 dark:text-white mb-2">Services proposés</h3>
+                    <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                      Informations sur nos solutions d'automatisation pour agences immobilières
+                    </p>
+                  </div>
+                  <div className="bg-neutral-50 dark:bg-neutral-900 rounded-lg p-4">
+                    <h3 className="font-medium text-neutral-800 dark:text-white mb-2">Prise de rendez-vous</h3>
+                    <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                      Planification de diagnostics gratuits pour vos besoins
+                    </p>
+                  </div>
+                </div>
+              </div>
 
-            <h2>Accès au site</h2>
-            <p>Le site est accessible gratuitement. Nous nous réservons le droit de le modifier ou suspendre sans préavis.</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="bg-white dark:bg-neutral-800 rounded-lg p-6 border border-neutral-200 dark:border-neutral-700">
+                  <h3 className="text-lg font-semibold text-neutral-800 dark:text-white mb-3 flex items-center">
+                    <span className="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
+                    Accès gratuit
+                  </h3>
+                  <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                    Le site est accessible gratuitement. Nous pouvons le modifier ou le suspendre sans préavis.
+                  </p>
+                </div>
 
-            <h2>Propriété intellectuelle</h2>
-            <p>Tous les éléments du site sont protégés. Toute reproduction est interdite sans autorisation.</p>
+                <div className="bg-white dark:bg-neutral-800 rounded-lg p-6 border border-neutral-200 dark:border-neutral-700">
+                  <h3 className="text-lg font-semibold text-neutral-800 dark:text-white mb-3 flex items-center">
+                    <span className="w-2 h-2 bg-purple-500 rounded-full mr-3"></span>
+                    Propriété intellectuelle
+                  </h3>
+                  <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                    Tous les éléments du site sont protégés. Reproduction interdite sans autorisation.
+                  </p>
+                </div>
 
-            <h2>Données personnelles</h2>
-            <p>Voir notre Politique de Confidentialité.</p>
+                <div className="bg-white dark:bg-neutral-800 rounded-lg p-6 border border-neutral-200 dark:border-neutral-700">
+                  <h3 className="text-lg font-semibold text-neutral-800 dark:text-white mb-3 flex items-center">
+                    <span className="w-2 h-2 bg-red-500 rounded-full mr-3"></span>
+                    Responsabilité
+                  </h3>
+                  <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                    Utilisation sous votre responsabilité. Agenzys n'est pas responsable des dommages.
+                  </p>
+                </div>
+              </div>
 
-            <h2>Responsabilité</h2>
-            <p>Agenzys n'est pas responsable des dommages résultant de l'utilisation du site. Vous utilisez le site sous votre responsabilité.</p>
+              <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-6">
+                <h3 className="text-lg font-semibold text-yellow-800 dark:text-yellow-400 mb-4">Aspects légaux</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <h4 className="font-medium text-yellow-700 dark:text-yellow-300 mb-2">Droit applicable</h4>
+                    <p className="text-yellow-600 dark:text-yellow-400">Droit français • Tribunaux de Rouen compétents</p>
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-yellow-700 dark:text-yellow-300 mb-2">Modifications</h4>
+                    <p className="text-yellow-600 dark:text-yellow-400">CGU modifiables • Changements effectifs dès publication</p>
+                  </div>
+                </div>
+              </div>
 
-            <h2>Liens hypertextes</h2>
-            <p>Le site peut contenir des liens vers des tiers. Nous ne contrôlons pas leur contenu.</p>
+              <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6">
+                <h3 className="text-lg font-semibold text-blue-800 dark:text-blue-400 mb-3">Données personnelles & Liens</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <h4 className="font-medium text-blue-700 dark:text-blue-300 mb-2">Vos données</h4>
+                    <p className="text-blue-600 dark:text-blue-400">
+                      Consultez notre <span className="font-medium">Politique de Confidentialité</span> pour tout savoir sur le traitement de vos données.
+                    </p>
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-blue-700 dark:text-blue-300 mb-2">Liens externes</h4>
+                    <p className="text-blue-600 dark:text-blue-400">
+                      Le site peut contenir des liens vers des sites tiers dont nous ne contrôlons pas le contenu.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
 
-            <h2>Modification des CGU</h2>
-            <p>Nous pouvons modifier ces CGU. Les changements sont effectifs dès publication. Consultez-les régulièrement.</p>
-
-            <h2>Loi applicable</h2>
-            <p>Ces CGU sont régies par le droit français. En cas de litige, les tribunaux de Rouen sont compétents (compte tenu de votre siège social).</p>
-
-            <h2>Acceptation</h2>
-            <p>En utilisant le site, vous acceptez ces CGU. Pour une acceptation expresse (ex. : lors d'un formulaire), cochez la case dédiée.</p>
-
-            <p><em>Date de dernière mise à jour : 04 août 2025.</em></p>
+            <div className="text-center pt-6 border-t border-neutral-200 dark:border-neutral-700">
+              <p className="text-sm text-neutral-500 dark:text-neutral-400">
+                Mis à jour le 04 août 2025 • En utilisant ce site, vous acceptez ces conditions
+              </p>
+            </div>
           </div>
         )
 
       case 'cgv':
         return (
-          <div className="prose prose-lg dark:prose-invert max-w-none">
-            <h1>Conditions Générales de Vente (CGV)</h1>
+          <div className="space-y-8">
+            <div className="border-b border-neutral-200 dark:border-neutral-700 pb-4">
+              <h1 className="text-3xl font-bold text-neutral-800 dark:text-white">Conditions Générales de Vente</h1>
+              <p className="text-neutral-600 dark:text-neutral-400 mt-2">Conditions applicables à nos services d'automatisation</p>
+            </div>
 
-            <h2>Préambule</h2>
-            <p>Les présentes CGV s'appliquent à tous les services d'automatisation proposés par Agenzys, édité par Thomas David Joseph Bouziza (SIREN 883 178 394). Elles complètent les CGU et s'appliquent dès acceptation d'un devis ou contrat.</p>
+            <div className="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-lg p-6">
+              <h2 className="text-lg font-semibold text-purple-800 dark:text-purple-400 mb-3">Services professionnels</h2>
+              <p className="text-purple-700 dark:text-purple-300 text-sm">
+                Ces conditions s'appliquent dès la signature d'un devis ou contrat pour nos services d'automatisation sur-mesure.
+              </p>
+            </div>
 
-            <h2>Objet</h2>
-            <p>Agenzys fournit des services d'automatisation sur-mesure pour agences immobilières, intégrés aux outils existants du client.</p>
+            <div className="grid gap-6">
+              <div className="bg-white dark:bg-neutral-800 rounded-lg p-6 border border-neutral-200 dark:border-neutral-700">
+                <h2 className="text-xl font-semibold text-orange-600 dark:text-orange-400 mb-4 flex items-center">
+                  <span className="w-2 h-2 bg-orange-500 rounded-full mr-3"></span>
+                  Nos services
+                </h2>
+                <div className="bg-neutral-50 dark:bg-neutral-900 rounded-lg p-4">
+                  <p className="font-medium text-neutral-800 dark:text-white mb-2">Automatisation sur-mesure</p>
+                  <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                    Solutions d'automatisation pour agences immobilières, intégrées à vos outils existants (Hektor, Adapt Immo, Leizee, etc.)
+                  </p>
+                </div>
+              </div>
 
-            <h2>Commande et Prix</h2>
-            <p>Les prix sont communiqués sur devis personnalisé après RDV diagnostic. Toute commande est confirmée par un contrat écrit. Les prix sont en euros, hors taxes (TVA applicable selon taux en vigueur).</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="bg-white dark:bg-neutral-800 rounded-lg p-6 border border-neutral-200 dark:border-neutral-700">
+                  <h3 className="text-lg font-semibold text-neutral-800 dark:text-white mb-4 flex items-center">
+                    <span className="w-2 h-2 bg-green-500 rounded-full mr-3"></span>
+                    Commande & Prix
+                  </h3>
+                  <div className="space-y-3">
+                    <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-3">
+                      <p className="text-sm text-green-700 dark:text-green-300 font-medium">Devis personnalisé</p>
+                      <p className="text-xs text-green-600 dark:text-green-400">Après RDV diagnostic gratuit</p>
+                    </div>
+                    <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-3">
+                      <p className="text-sm text-green-700 dark:text-green-300 font-medium">Contrat écrit</p>
+                      <p className="text-xs text-green-600 dark:text-green-400">Confirmation de toute commande</p>
+                    </div>
+                  </div>
+                </div>
 
-            <h2>Paiement</h2>
-            <p>Paiement par virement ou autre moyen convenu, dans les 30 jours suivant la facture.</p>
+                <div className="bg-white dark:bg-neutral-800 rounded-lg p-6 border border-neutral-200 dark:border-neutral-700">
+                  <h3 className="text-lg font-semibold text-neutral-800 dark:text-white mb-4 flex items-center">
+                    <span className="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
+                    Paiement
+                  </h3>
+                  <div className="space-y-3">
+                    <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3">
+                      <p className="text-sm text-blue-700 dark:text-blue-300 font-medium">30 jours</p>
+                      <p className="text-xs text-blue-600 dark:text-blue-400">Délai de paiement après facture</p>
+                    </div>
+                    <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3">
+                      <p className="text-sm text-blue-700 dark:text-blue-300 font-medium">Virement bancaire</p>
+                      <p className="text-xs text-blue-600 dark:text-blue-400">Ou autre moyen convenu</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-            <h2>Prestation et Délais</h2>
-            <p>Les services sont fournis selon le devis. Délais indicatifs ; retards non imputables à Agenzys n'ouvrent pas droit à annulation.</p>
+              <div className="bg-white dark:bg-neutral-800 rounded-lg p-6 border border-neutral-200 dark:border-neutral-700">
+                <h3 className="text-lg font-semibold text-orange-600 dark:text-orange-400 mb-4 flex items-center">
+                  <span className="w-2 h-2 bg-orange-500 rounded-full mr-3"></span>
+                  Prestation & Garanties
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="bg-orange-50 dark:bg-orange-900/20 rounded-lg p-4 text-center">
+                    <h4 className="font-medium text-orange-800 dark:text-orange-400 mb-2">Délais</h4>
+                    <p className="text-sm text-orange-700 dark:text-orange-300">Selon devis</p>
+                    <p className="text-xs text-orange-600 dark:text-orange-400">Indicatifs</p>
+                  </div>
+                  <div className="bg-orange-50 dark:bg-orange-900/20 rounded-lg p-4 text-center">
+                    <h4 className="font-medium text-orange-800 dark:text-orange-400 mb-2">Garantie</h4>
+                    <p className="text-sm text-orange-700 dark:text-orange-300">Conformité</p>
+                    <p className="text-xs text-orange-600 dark:text-orange-400">Des services</p>
+                  </div>
+                  <div className="bg-orange-50 dark:bg-orange-900/20 rounded-lg p-4 text-center">
+                    <h4 className="font-medium text-orange-800 dark:text-orange-400 mb-2">Responsabilité</h4>
+                    <p className="text-sm text-orange-700 dark:text-orange-300">Limitée</p>
+                    <p className="text-xs text-orange-600 dark:text-orange-400">Au montant du contrat</p>
+                  </div>
+                </div>
+              </div>
 
-            <h2>Garantie et Responsabilité</h2>
-            <p>Agenzys garantit la conformité des services. Responsabilité limitée au montant du contrat. Pas de garantie pour interruptions dues au client.</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-6">
+                  <h3 className="text-lg font-semibold text-red-800 dark:text-red-400 mb-3 flex items-center">
+                    <span className="w-2 h-2 bg-red-500 rounded-full mr-3"></span>
+                    Résiliation
+                  </h3>
+                  <div className="space-y-2 text-sm">
+                    <p className="text-red-700 dark:text-red-300"><span className="font-medium">Préavis :</span> 30 jours</p>
+                    <p className="text-red-700 dark:text-red-300"><span className="font-medium">Notification :</span> Par écrit</p>
+                    <p className="text-red-700 dark:text-red-300"><span className="font-medium">Remboursement :</span> Prorata des services non fournis</p>
+                  </div>
+                </div>
 
-            <h2>Résiliation</h2>
-            <p>Possible par notification écrite, avec préavis de 30 jours. Remboursement prorata pour services non fournis.</p>
+                <div className="bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-200 dark:border-indigo-800 rounded-lg p-6">
+                  <h3 className="text-lg font-semibold text-indigo-800 dark:text-indigo-400 mb-3 flex items-center">
+                    <span className="w-2 h-2 bg-indigo-500 rounded-full mr-3"></span>
+                    Litiges
+                  </h3>
+                  <div className="space-y-2 text-sm">
+                    <p className="text-indigo-700 dark:text-indigo-300"><span className="font-medium">Droit :</span> Français</p>
+                    <p className="text-indigo-700 dark:text-indigo-300"><span className="font-medium">Médiation :</span> Médiateur des Entreprises</p>
+                    <p className="text-indigo-700 dark:text-indigo-300"><span className="font-medium">Tribunaux :</span> Rouen</p>
+                  </div>
+                </div>
+              </div>
 
-            <h2>Données et Confidentialité</h2>
-            <p>Voir Politique de Confidentialité. Le client reste responsable de ses données.</p>
+              <div className="bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg p-6">
+                <h3 className="text-lg font-semibold text-neutral-800 dark:text-white mb-3">Données & Confidentialité</h3>
+                <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                  La gestion de vos données est détaillée dans notre <span className="font-medium text-orange-600 dark:text-orange-400">Politique de Confidentialité</span>. 
+                  Vous restez responsable de vos données et de leur sauvegarde.
+                </p>
+              </div>
+            </div>
 
-            <h2>Litiges</h2>
-            <p>Droit français applicable. Médiation possible via le Médiateur des Entreprises. Tribunaux de Rouen compétents.</p>
-
-            <h2>Acceptation</h2>
-            <p>Le client accepte ces CGV en signant le devis ou contrat.</p>
-
-            <p><em>Date de dernière mise à jour : 04 août 2025.</em></p>
+            <div className="text-center pt-6 border-t border-neutral-200 dark:border-neutral-700">
+              <p className="text-sm text-neutral-500 dark:text-neutral-400">
+                Mis à jour le 04 août 2025 • Acceptation par signature du devis ou contrat
+              </p>
+            </div>
           </div>
         )
 
