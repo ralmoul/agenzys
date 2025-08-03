@@ -1,0 +1,119 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+  
+  /* Variables pour les composants shadcn */
+  --background: 0 0% 100%;
+  --foreground: 222.2 84% 4.9%;
+  --muted: 210 40% 96%;
+  --muted-foreground: 215.4 16.3% 46.9%;
+  --border: 214.3 31.8% 91.4%;
+  --primary: 221.2 83.2% 53.3%;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+    
+    /* Variables pour les composants shadcn en mode sombre */
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --border: 217.2 32.6% 17.5%;
+    --primary: 217.2 91.2% 59.8%;
+  }
+}
+
+@theme {
+  --shadow-derek:
+    0px 0px 0px 1px rgb(0 0 0 / 0.06),
+    0px 1px 1px -0.5px rgb(0 0 0 / 0.06),
+    0px 3px 3px -1.5px rgb(0 0 0 / 0.06), 
+    0px 6px 6px -3px rgb(0 0 0 / 0.06),
+    0px 12px 12px -6px rgb(0 0 0 / 0.06),
+    0px 24px 24px -12px rgb(0 0 0 / 0.06);
+
+  --shadow-input:
+    0px 2px 3px -1px rgba(0,0,0,0.1), 
+    0px 1px 0px 0px rgba(25,28,33,0.02), 
+    0px 0px 0px 1px rgba(25,28,33,0.08);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+.squircle {
+  clip-path: url(#squircleClip);
+}
+
+/* Animation marquee personnalisée */
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(calc(-100% - 1rem));
+  }
+}
+
+.animate-marquee {
+  animation: marquee 40s linear infinite;
+}
+
+/* Animations accordion */
+@keyframes accordion-down {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+  }
+}
+
+@keyframes accordion-up {
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+  to {
+    height: 0;
+  }
+}
+
+/* Animation star-border personnalisée */
+@keyframes star-movement-bottom {
+  0% { transform: translate(0%, 0%); opacity: 1; }
+  100% { transform: translate(-100%, 0%); opacity: 0; }
+}
+
+@keyframes star-movement-top {
+  0% { transform: translate(0%, 0%); opacity: 1; }
+  100% { transform: translate(100%, 0%); opacity: 0; }
+}
+
+.animate-star-movement-bottom {
+  animation: star-movement-bottom 6s linear infinite alternate;
+}
+
+.animate-star-movement-top {
+  animation: star-movement-top 6s linear infinite alternate;
+}
