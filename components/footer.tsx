@@ -8,20 +8,23 @@ export function Footer() {
   const pages = [
     {
       title: "Home",
-      href: "#",
+      href: "/",
     },
     {
       title: "Features",
-      href: "#",
+      href: "/#features",
     },
-
+    {
+      title: "FAQ",
+      href: "/#faq",
+    },
     {
       title: "Contact",
-      href: "#",
+      href: "/#contact",
     },
     {
       title: "Blog",
-      href: "#",
+      href: "/blog",
     },
   ];
 
