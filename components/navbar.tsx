@@ -32,6 +32,10 @@ export const Navbar = () => {
       link: "/#features",
     },
     {
+      name: "Blog",
+      link: "/blog",
+    },
+    {
       name: "FAQ",
       link: "/#faq",
     },
