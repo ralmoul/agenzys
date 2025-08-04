@@ -419,23 +419,68 @@ async function generateExcerpt(title: string) {
   }
 }
 
+// FONCTION TÉLÉCHARGEMENT ET STOCKAGE D'IMAGE DALL-E
+async function downloadAndStoreImage(imageUrl: string, filename: string): Promise<string> {
+  try {
+    console.log('[DOWNLOAD] Téléchargement image DALL-E...');
+    
+    // Télécharger l'image depuis DALL-E
+    const response = await fetch(imageUrl);
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    
+    const imageBuffer = await response.arrayBuffer();
+    const uint8Array = new Uint8Array(imageBuffer);
+    
+    // Créer le nom de fichier unique
+    const timestamp = Date.now();
+    const finalFilename = `${timestamp}-${filename.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase()}.jpg`;
+    
+    // Préparer les données pour GitHub
+    const base64Content = Buffer.from(uint8Array).toString('base64');
+    
+    // Committer l'image sur GitHub dans public/images/blog/
+    const githubResponse = await fetch(`https://api.github.com/repos/${process.env.GITHUB_REPO}/contents/public/images/blog/${finalFilename}`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${process.env.GITHUB_TOKEN}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        message: `Add AI-generated blog image: ${finalFilename}`,
+        content: base64Content,
+        committer: {
+          name: 'Agenzys AI',
+          email: 'ai@agenzys.com'
+        }
+      })
+    });
+
+    if (!githubResponse.ok) {
+      throw new Error(`GitHub API error: ${githubResponse.status}`);
+    }
+
+    const localImageUrl = `/images/blog/${finalFilename}`;
+    console.log('[DOWNLOAD] Image sauvegardée:', localImageUrl);
+    
+    return localImageUrl;
+    
+  } catch (error) {
+    console.error('[DOWNLOAD] Erreur téléchargement:', error);
+    // Fallback : retourner l'URL originale si le téléchargement échoue
+    return imageUrl;
+  }
+}
+
 async function generateImageAndAlt(title: string) {
-  // Images par défaut fiables pour l'immobilier
-  const defaultImages = [
-    "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1200&h=630&fit=crop&auto=format",
-    "https://images.unsplash.com/photo-1582407947304-fd86f028f716?w=1200&h=630&fit=crop&auto=format", 
-    "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1200&h=630&fit=crop&auto=format",
-    "https://images.unsplash.com/photo-1565182999561-18d7dc61c393?w=1200&h=630&fit=crop&auto=format",
-    "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200&h=630&fit=crop&auto=format"
-  ];
-  
-  let imageUrl = defaultImages[Math.floor(Math.random() * defaultImages.length)];
+  let imageUrl = "/images/blog/default-immobilier.jpg"; // Image par défaut locale
   let imageAlt = `Illustration professionnelle représentant ${title}`;
   
   if (!openai) return { imageUrl, imageAlt };
   
   try {
-    // Essayer DALL-E mais avec fallback sur images par défaut
+    console.log('[DALLE] Génération image DALL-E...');
+    
+    // Générer image DALL-E
     const imageResponse = await openai.images.generate({
       model: "dall-e-3",
       prompt: IMAGE_PROMPT.replace('{topic}', title),
@@ -444,9 +489,12 @@ async function generateImageAndAlt(title: string) {
       n: 1,
     });
     
-    // Si DALL-E fonctionne, utiliser son image
-    if (imageResponse.data?.[0]?.url) {
-      imageUrl = imageResponse.data[0].url;
+    const dalleUrl = imageResponse.data?.[0]?.url;
+    
+    if (dalleUrl) {
+      console.log('[DALLE] Image générée, téléchargement...');
+      // Télécharger et stocker l'image localement
+      imageUrl = await downloadAndStoreImage(dalleUrl, title);
     }
     
     // Générer alt text optimisé
@@ -463,8 +511,8 @@ async function generateImageAndAlt(title: string) {
     imageAlt = altResponse.choices[0]?.message?.content?.replace(/"/g, '').trim() || imageAlt;
     
   } catch (error) {
-    console.error('[IMAGE] Erreur génération image, utilisation image par défaut:', error);
-    // Garder l'image par défaut déjà sélectionnée
+    console.error('[DALLE] Erreur génération image:', error);
+    // Garder l'image par défaut locale
   }
   
   return { imageUrl, imageAlt };
