@@ -169,7 +169,7 @@ blue and orange colors, no text, 16:9 ratio, professional lighting.`;
 // FONCTION PERPLEXITY SONAR PRO - Recherche actualité immobilière
 async function getLatestRealEstateNews(searchQuery: string) {
   try {
-    console.log(`🔍 Recherche Perplexity: "${searchQuery}"`);
+    console.log(`[PERPLEXITY] Recherche: "${searchQuery}"`);
     
     const response = await axios.post('https://api.perplexity.ai/chat/completions', {
       model: "llama-3.1-sonar-huge-128k-online",
@@ -203,12 +203,12 @@ Format: texte structuré avec détails factuels et sources.`
     });
 
     const newsContent = response.data.choices[0]?.message?.content || '';
-    console.log(`✅ Perplexity: ${newsContent.length} caractères d'actualités`);
+    console.log(`[PERPLEXITY] Success: ${newsContent.length} caractères d'actualités`);
     
     return newsContent;
     
   } catch (error) {
-    console.error('❌ Erreur Perplexity:', error);
+    console.error('[PERPLEXITY] Erreur:', error);
     return 'Actualités immobilières non disponibles. Contenu basé sur les tendances générales du secteur.';
   }
 }
@@ -216,7 +216,7 @@ Format: texte structuré avec détails factuels et sources.`
 // FONCTION HYBRIDE - Perplexity + GPT-4 pour articles d'actualité
 async function generateNewsArticle(newsTopic: any) {
   try {
-    console.log(`📰 Génération article actualité: "${newsTopic.search}"`);
+    console.log(`[NEWS] Génération article actualité: "${newsTopic.search}"`);
     
     // 1. Recherche actualité avec Perplexity
     const latestNews = await getLatestRealEstateNews(newsTopic.search);
@@ -291,7 +291,7 @@ Inclure mois/année 2025 et mot-clé principal : ${newsTopic.keywords[0]}`
     };
     
   } catch (error) {
-    console.error('❌ Erreur génération actualité:', error);
+    console.error('[NEWS] Erreur génération actualité:', error);
     throw error;
   }
 }`;
@@ -299,7 +299,7 @@ Inclure mois/année 2025 et mot-clé principal : ${newsTopic.keywords[0]}`
 // Génération d'article avec OpenAI
 async function generateArticleContent(topicData: any) {
   try {
-    console.log(`🤖 Génération GPT-4: "${topicData.title}"`);
+    console.log(`[AI] Génération GPT-4: "${topicData.title}"`);
     
     // Vérifier si OpenAI est disponible
     if (!openai) {
@@ -338,7 +338,7 @@ async function generateArticleContent(topicData: any) {
     const excerpt = excerptResponse.choices[0]?.message?.content?.replace(/"/g, '').trim() || '';
 
     // 3. Image DALL-E 3
-    console.log(`🎨 Génération DALL-E: "${topicData.title}"`);
+    console.log(`[DALLE] Génération image: "${topicData.title}"`);
     const imageResponse = await openai.images.generate({
       model: "dall-e-3",
       prompt: IMAGE_PROMPT.replace('{topic}', topicData.title),
@@ -362,7 +362,7 @@ async function generateArticleContent(topicData: any) {
 
     const imageAlt = altResponse.choices[0]?.message?.content?.replace(/"/g, '').trim() || topicData.title;
 
-    console.log(`✅ Article généré: ${content?.length || 0} caractères`);
+    console.log(`[AI] Article généré: ${content?.length || 0} caractères`);
 
     return {
       title: topicData.title,
@@ -375,7 +375,7 @@ async function generateArticleContent(topicData: any) {
     };
 
   } catch (error) {
-    console.error('❌ Erreur OpenAI:', error);
+    console.error('[AI] Erreur OpenAI:', error);
     
     return {
       title: topicData.title,
@@ -403,7 +403,7 @@ export async function POST(request: NextRequest) {
       if (useNews) {
         // Sélectionner sujet d'actualité
         selectedTopic = NEWS_TOPICS[Math.floor(Math.random() * NEWS_TOPICS.length)];
-        console.log(`📰 Sujet actualité sélectionné: "${selectedTopic.search}"`);
+        console.log(`[NEWS] Sujet actualité sélectionné: "${selectedTopic.search}"`);
         
         // Générer article hybride Perplexity + GPT-4
         const newsResult = await generateNewsArticle(selectedTopic);
@@ -423,7 +423,7 @@ export async function POST(request: NextRequest) {
       } else {
         // Sélectionner sujet evergreen classique
         selectedTopic = ARTICLE_TOPICS[Math.floor(Math.random() * ARTICLE_TOPICS.length)];
-        console.log(`🎯 Sujet evergreen sélectionné: "${selectedTopic.title}"`);
+        console.log(`[AI] Sujet evergreen sélectionné: "${selectedTopic.title}"`);
         
         articleData = await generateArticleContent(selectedTopic);
         articleData.generation_method = 'GPT-4 + DALL-E';
@@ -443,7 +443,7 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('❌ Erreur génération:', error);
+    console.error('[AI] Erreur génération:', error);
     return NextResponse.json({
       success: false,
       error: error instanceof Error ? error.message : String(error)
@@ -504,7 +504,7 @@ async function generateImageAndAlt(title: string) {
     imageAlt = altResponse.choices[0]?.message?.content?.replace(/"/g, '').trim() || imageAlt;
     
   } catch (error) {
-    console.error('⚠️ Erreur génération image:', error);
+    console.error('[IMAGE] Erreur génération image:', error);
   }
   
   return { imageUrl, imageAlt };
