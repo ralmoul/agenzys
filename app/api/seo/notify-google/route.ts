@@ -62,29 +62,13 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// Fonction utilitaire pour notifier automatiquement après publication d'article
-export async function notifyGoogleNewContent(articleUrl: string) {
-  try {
-    const response = await fetch('https://agenzys.vercel.app/api/seo/notify-google', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        urls: [
-          articleUrl,
-          'https://agenzys.vercel.app/blog',
-          'https://agenzys.vercel.app/sitemap.xml'
-        ]
-      })
-    });
-    
-    const result = await response.json();
-    console.log('✅ Google notifié:', result);
-    return result;
-    
-  } catch (error) {
-    console.error('❌ Erreur notification Google:', error);
-    return { success: false, error };
-  }
+// GET endpoint pour status
+export async function GET() {
+  return NextResponse.json({
+    message: 'API de notification Google Search Console',
+    status: 'active',
+    endpoints: {
+      POST: 'Notifier Google de nouvelles URLs'
+    }
+  });
 }

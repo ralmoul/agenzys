@@ -1,6 +1,7 @@
 import { getPostBySlug, getAllPosts } from '@/lib/blog'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
+import Image from 'next/image'
 import { ArrowLeft } from 'lucide-react'
 import type { Metadata } from 'next'
 
@@ -168,11 +169,13 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
               
               {/* Image de l'article si disponible */}
               {post.image && (
-                <div className="my-8">
-                  <img 
+                <div className="my-8 relative w-full h-64">
+                  <Image 
                     src={post.image} 
                     alt={post.imageAlt || post.title}
-                    className="w-full h-64 object-cover rounded-lg"
+                    fill
+                    className="object-cover rounded-lg"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   />
                 </div>
               )}

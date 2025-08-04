@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { getAllPosts } from '@/lib/blog'
 import type { Metadata } from 'next'
 
@@ -114,12 +115,14 @@ export default function BlogPage() {
                 <Link href={`/blog/${post.slug}`} className="block h-full">
                   {/* Image d'article si disponible */}
                   {post.image && (
-                    <div className="mb-4 -m-6 mt-0">
-                      <img 
+                    <div className="mb-4 -m-6 mt-0 relative w-full h-48">
+                      <Image 
                         src={post.image} 
                         alt={post.imageAlt || post.title}
-                        className="w-full h-48 object-cover rounded-t-lg"
-                        loading={index < 3 ? 'eager' : 'lazy'}
+                        fill
+                        className="object-cover rounded-t-lg"
+                        priority={index < 3}
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       />
                     </div>
                   )}
