@@ -121,10 +121,30 @@ function AdminDashboard() {
         body: JSON.stringify({ force: true })
       });
       const result = await response.json();
-      setLastGeneration(result);
+      
+      if (result.success && result.publication) {
+        // Adapter la structure pour l'affichage
+        setLastGeneration({
+          success: true,
+          message: result.message,
+          article: {
+            ...result.publication.article,
+            published: {
+              url: `https://agenzys.vercel.app/blog/${result.publication.article.title?.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || 'article'}`
+            }
+          }
+        });
+      } else {
+        setLastGeneration(result);
+      }
+      
       await loadStatus();
     } catch (error) {
       console.error('Erreur publication forcée:', error);
+      setLastGeneration({
+        success: false,
+        error: 'Erreur lors de la publication forcée'
+      });
     } finally {
       setIsLoading(false);
     }
@@ -245,13 +265,19 @@ function AdminDashboard() {
                 {lastGeneration.article && (
                   <div className="space-y-3">
                     <div>
-                      <strong>Sujet:</strong> {lastGeneration.article.topic}
+                      <strong>Méthode:</strong> {lastGeneration.article.generation_method}
                     </div>
                     <div>
-                      <strong>Titre:</strong> {lastGeneration.article.generated?.title}
+                      <strong>Titre:</strong> {lastGeneration.article.title}
                     </div>
                     <div>
-                      <strong>Catégorie:</strong> {lastGeneration.article.generated?.category}
+                      <strong>Catégorie:</strong> {lastGeneration.article.category}
+                    </div>
+                    <div>
+                      <strong>Type:</strong> {lastGeneration.article.type}
+                    </div>
+                    <div>
+                      <strong>Mots-clés:</strong> {lastGeneration.article.keywords?.join(', ')}
                     </div>
                     {lastGeneration.article.published?.url && (
                       <div>
