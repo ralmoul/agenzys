@@ -205,7 +205,7 @@ export const FeaturedImages = ({
           textClassName
         )}
       >
-        Trusted by 27,000+ developers
+        Approuvé par +50 agences immobilières
       </p>
     </div>
   );
