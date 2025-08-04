@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
+import { marked } from 'marked';
 
 // Configuration OpenAI (avec fallback pour éviter erreur build)
 const openai = process.env.OPENAI_API_KEY ? new OpenAI({
@@ -87,7 +88,10 @@ async function generateArticleContent(topicData: any) {
       max_tokens: 4000,
     });
 
-    const content = contentResponse.choices[0]?.message?.content || '';
+    const contentMarkdown = contentResponse.choices[0]?.message?.content || '';
+    
+    // Convertir Markdown en HTML pour l'affichage
+    const content = marked(contentMarkdown);
 
     // 2. Excerpt SEO
     const excerptResponse = await openai.chat.completions.create({
