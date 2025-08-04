@@ -1,5 +1,86 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+interface BlogPost {
+  title: string;
+  excerpt: string;
+  content: string;
+  date: string;
+  category: string;
+  keywords: string[];
+  author: string;
+  published: boolean;
+  slug: string;
+  image?: string;
+  imageAlt?: string;
+}
+
+async function commitToGitHub(blogPost: BlogPost) {
+  const token = process.env.GITHUB_TOKEN;
+  const repo = process.env.GITHUB_REPO || 'ralmoul/agenzys';
+  
+  if (!token || token === 'your_github_token_here') {
+    console.log('⚠️ GITHUB_TOKEN non configuré - simulation du commit');
+    return { success: true, simulated: true };
+  }
+
+  try {
+    // 1. Lire le fichier blog-posts.json actuel
+    const getFileUrl = `https://api.github.com/repos/${repo}/contents/data/blog-posts.json`;
+    const getResponse = await fetch(getFileUrl, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Accept': 'application/vnd.github.v3+json',
+      },
+    });
+
+    let currentPosts: BlogPost[] = [];
+    let sha = '';
+
+    if (getResponse.ok) {
+      const fileData = await getResponse.json();
+      const content = Buffer.from(fileData.content, 'base64').toString('utf-8');
+      currentPosts = JSON.parse(content);
+      sha = fileData.sha;
+    }
+
+    // 2. Ajouter le nouveau post
+    currentPosts.unshift(blogPost); // Ajouter au début
+
+    // 3. Encoder le nouveau contenu
+    const newContent = JSON.stringify(currentPosts, null, 2);
+    const encodedContent = Buffer.from(newContent).toString('base64');
+
+    // 4. Commit sur GitHub
+    const commitUrl = `https://api.github.com/repos/${repo}/contents/data/blog-posts.json`;
+    const commitResponse = await fetch(commitUrl, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Accept': 'application/vnd.github.v3+json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        message: `📝 Nouvel article: ${blogPost.title.substring(0, 50)}...`,
+        content: encodedContent,
+        sha: sha,
+      }),
+    });
+
+    if (commitResponse.ok) {
+      console.log('✅ Article commité sur GitHub avec succès');
+      return { success: true, simulated: false };
+    } else {
+      const error = await commitResponse.text();
+      console.error('❌ Erreur commit GitHub:', error);
+      return { success: false, error: error };
+    }
+
+  } catch (error) {
+    console.error('❌ Erreur GitHub API:', error);
+    return { success: false, error: error instanceof Error ? error.message : 'Erreur inconnue' };
+  }
+}
+
 // API ULTRA PERMISSIVE - ACCEPTE TOUT DE N8N
 export async function POST(request: NextRequest) {
   try {
@@ -26,8 +107,15 @@ export async function POST(request: NextRequest) {
       const titleMatch = rawJson.match(/["']title["']\s*:\s*["']([^"']+)["']/i);
       if (titleMatch) title = titleMatch[1];
       
-      const excerptMatch = rawJson.match(/["']excerpt["']\s*:\s*["']([^"']+)["']/i);
-      if (excerptMatch) excerpt = excerptMatch[1];
+      const excerptMatch = rawJson.match(/["']excerpt["']\s*:\s*["']([^"']*(?:\\.[^"']*)*)/i);
+      if (excerptMatch) {
+        excerpt = excerptMatch[1]
+          .replace(/\\n/g, '\n')
+          .replace(/\\r/g, '\r')
+          .replace(/\\t/g, '\t')
+          .replace(/\\"/g, '"')
+          .replace(/\\\\/g, '\\');
+      }
       
       const categoryMatch = rawJson.match(/["']category["']\s*:\s*["']([^"']+)["']/i);
       if (categoryMatch) category = categoryMatch[1];
@@ -46,6 +134,16 @@ export async function POST(request: NextRequest) {
       // Extraction de l'image
       const imageMatch = rawJson.match(/["']image["']\s*:\s*["']([^"']+)["']/i);
       if (imageMatch) image = imageMatch[1];
+
+      // Extraction des keywords
+      const keywordsMatch = rawJson.match(/["']keywords["']\s*:\s*\[([^\]]+)\]/i);
+      if (keywordsMatch) {
+        try {
+          keywords = JSON.parse(`[${keywordsMatch[1]}]`);
+        } catch (e) {
+          console.log('⚠️ Erreur parsing keywords, utilisation par défaut');
+        }
+      }
     }
     
     // MÉTHODE 2: Si c'est direct
@@ -82,12 +180,34 @@ export async function POST(request: NextRequest) {
       year: 'numeric'
     });
 
-    console.log('�� SUCCÈS - Article traité:', slug);
+    // CRÉATION DE L'OBJET BLOG POST
+    const blogPost: BlogPost = {
+      title,
+      excerpt,
+      content,
+      date: currentDate,
+      category,
+      keywords,
+      author: 'Agenzys',
+      published: true,
+      slug,
+      ...(image && { image }),
+      ...(imageAlt && { imageAlt }),
+    };
+
+    console.log('💾 Tentative de commit sur GitHub...');
+    
+    // COMMIT SUR GITHUB
+    const commitResult = await commitToGitHub(blogPost);
+    
+    console.log('🎉 SUCCÈS - Article traité:', slug);
 
     // TOUJOURS RETOURNER SUCCESS
     return NextResponse.json({
       success: true,
-      message: 'Article créé avec succès via n8n',
+      message: commitResult.simulated 
+        ? 'Article créé (simulé - configurez GITHUB_TOKEN pour publier)'
+        : 'Article publié avec succès sur le site',
       slug: slug,
       url: `https://agenzys.vercel.app/blog/${slug}`,
       article: {
@@ -100,7 +220,8 @@ export async function POST(request: NextRequest) {
         has_image: !!image,
         image: image,
         imageAlt: imageAlt
-      }
+      },
+      github_commit: commitResult
     });
 
   } catch (error) {
@@ -131,8 +252,9 @@ export async function POST(request: NextRequest) {
 export async function GET() {
   return NextResponse.json({ 
     status: 'OK', 
-    message: 'API Blog Agenzys - Version Ultra Permissive',
-    timestamp: new Date().toISOString()
+    message: 'API Blog Agenzys - Version GitHub Auto-Publish',
+    timestamp: new Date().toISOString(),
+    github_configured: process.env.GITHUB_TOKEN !== 'your_github_token_here'
   });
 }
 
