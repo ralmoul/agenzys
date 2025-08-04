@@ -1,19 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { addPost, BlogPost } from '@/lib/blog'
-import crypto from 'crypto'
 
-// Clé secrète pour sécuriser l'API (à définir dans vos variables d'environnement)
-const API_SECRET = process.env.BLOG_API_SECRET || 'your-secret-key-here'
-
-// Fonction pour valider la signature (sécurité)
-function validateSignature(body: string, signature: string): boolean {
-  const expectedSignature = crypto
-    .createHmac('sha256', API_SECRET)
-    .update(body)
-    .digest('hex')
-  
-  return signature === `sha256=${expectedSignature}`
-}
+// SIGNATURE HMAC SUPPRIMÉE - Plus simple pour l'automatisation
 
 // Fonction pour valider les données d'un article
 function validateBlogPost(data: any): { valid: boolean; errors: string[] } {
@@ -62,33 +50,33 @@ export async function GET() {
   }
 }
 
-// POST - Ajouter un nouvel article (pour n8n)
+// POST - Ajouter un nouvel article (SANS signature HMAC)
 export async function POST(request: NextRequest) {
   try {
+    console.log('=== NOUVELLE REQUÊTE BLOG ===')
+    console.log('Timestamp:', new Date().toISOString())
+    
     // Lecture du body
     const body = await request.text()
+    console.log('Body reçu (200 premiers caractères):', body.substring(0, 200))
+    
     let data
     
     try {
       data = JSON.parse(body)
-    } catch {
+      console.log('JSON parsé avec succès. Clés:', Object.keys(data))
+    } catch (parseError) {
+      console.error('Erreur parsing JSON:', parseError)
       return NextResponse.json(
         { success: false, error: 'JSON invalide' },
         { status: 400 }
       )
     }
     
-    // Validation de la signature (sécurité)
-    const signature = request.headers.get('x-signature')
-    if (!signature || !validateSignature(body, signature)) {
-      return NextResponse.json(
-        { success: false, error: 'Signature invalide' },
-        { status: 401 }
-      )
-    }
-    
-    // Validation des données
+    // Validation des données (SANS vérification de signature)
     const validation = validateBlogPost(data)
+    console.log('Validation des données:', validation)
+    
     if (!validation.valid) {
       return NextResponse.json(
         { success: false, errors: validation.errors },
@@ -114,17 +102,35 @@ export async function POST(request: NextRequest) {
       author: data.author || 'Agenzys AI'
     }
     
+    console.log('Tentative de création de l\'article:', {
+      title: newPost.title,
+      excerpt_length: newPost.excerpt.length,
+      content_length: newPost.content.length,
+      category: newPost.category,
+      keywords_count: newPost.keywords.length
+    })
+    
     // Ajout de l'article
     const result = addPost(newPost)
+    console.log('Résultat de l\'ajout:', result)
     
     if (result.success) {
-      return NextResponse.json({
+      const response = {
         success: true,
         message: 'Article créé avec succès',
         slug: result.slug,
-        url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://agenzys.vercel.app'}/blog/${result.slug}`
-      })
+        url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://agenzys.vercel.app'}/blog/${result.slug}`,
+        article: {
+          title: newPost.title,
+          slug: result.slug,
+          date: newPost.date
+        }
+      }
+      
+      console.log('✅ Article créé avec succès:', result.slug)
+      return NextResponse.json(response)
     } else {
+      console.log('❌ Échec création article:', result.error)
       return NextResponse.json(
         { success: false, error: result.error },
         { status: 400 }
@@ -134,7 +140,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Erreur POST /api/blog:', error)
     return NextResponse.json(
-      { success: false, error: 'Erreur serveur' },
+      { success: false, error: 'Erreur serveur', details: error.message },
       { status: 500 }
     )
   }
@@ -147,7 +153,7 @@ export async function OPTIONS() {
     headers: {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, x-signature',
+      'Access-Control-Allow-Headers': 'Content-Type',
     },
   })
 }
