@@ -14,67 +14,6 @@ interface BlogPost {
   imageAlt?: string;
 }
 
-// EXTRACTION ROBUSTE - CAPTURE TOUT LE CONTENU ET L'IMAGE
-function extractFieldValue(rawJson: string, fieldName: string): string {
-  console.log(`🔍 Extracting field: ${fieldName}`);
-  const fieldPattern = new RegExp(`["']${fieldName}["']\\s*:\\s*["']`, 'i');
-  const fieldMatch = rawJson.match(fieldPattern);
-  
-  if (!fieldMatch) {
-    console.log(`❌ Field ${fieldName} NOT FOUND in JSON`);
-    return '';
-  }
-  
-  console.log(`✅ Field ${fieldName} FOUND, pattern:`, fieldMatch[0]);
-  
-  const startIndex = rawJson.indexOf(fieldMatch[0]) + fieldMatch[0].length;
-  let value = '';
-  let i = startIndex;
-  let braceDepth = 0;
-  let escapeNext = false;
-  
-  while (i < rawJson.length) {
-    const char = rawJson[i];
-    
-    if (escapeNext) {
-      value += char;
-      escapeNext = false;
-      i++;
-      continue;
-    }
-    
-    if (char === '\\') {
-      escapeNext = true;
-      i++;
-      continue;
-    }
-    
-    // Gérer les accolades dans le contenu
-    if (char === '{') braceDepth++;
-    if (char === '}') braceDepth--;
-    
-    // Si on trouve une quote, vérifier si c'est la fin du champ
-    if (char === '"' || char === "'") {
-      // Regarder ce qui suit pour voir si c'est vraiment la fin
-      const afterQuote = rawJson.substring(i + 1, i + 10).trim();
-      if ((afterQuote.startsWith(',') || afterQuote.startsWith('}') || afterQuote === '') && braceDepth === 0) {
-        break; // C'est la fin du champ
-      }
-    }
-    
-    value += char;
-    i++;
-  }
-  
-  // Nettoyer les échappements
-  return value
-    .replace(/\\"/g, '"')
-    .replace(/\\n/g, '\n')
-    .replace(/\\r/g, '\r')
-    .replace(/\\t/g, '\t')
-    .replace(/\\\\/g, '\\');
-}
-
 // Fonction pour parser le JSON de n8n (avec échappements doubles)
 function parseN8nJson(jsonString: string): any {
   try {
@@ -173,86 +112,132 @@ async function commitToGitHub(blogPost: BlogPost) {
 }
 
 export async function POST(request: NextRequest) {
-  // MODE DEBUG ULTRA - TOUJOURS RETOURNER SUCCESS AVEC TOUS LES DÉTAILS
   try {
-    console.log('🚨 DEBUG MODE - API Blog reçue');
+    console.log('📝 API Blog - Nouveau POST reçu');
     
-    const bodyText = await request.text();
-    console.log('📄 BODY REÇU COMPLET:', bodyText);
-    console.log('📏 Taille:', bodyText.length);
+    let parsedBody;
     
-    // Essayer toutes les méthodes de parsing
-    let results: any = {
-      body_raw: bodyText,
-      body_length: bodyText.length,
-      parsing_attempts: {}
-    };
-    
-    // Tentative 1: JSON direct
     try {
-      const directParse = JSON.parse(bodyText);
-      results.parsing_attempts.direct_json = { success: true, data: directParse };
-    } catch (e) {
-      results.parsing_attempts.direct_json = { success: false, error: e instanceof Error ? e.message : 'Unknown error' };
-    }
-    
-    // Tentative 2: JSON encapsulé n8n
-    try {
-      const tempParsed = JSON.parse(bodyText);
-      if (tempParsed.json) {
-        const n8nParse = JSON.parse(tempParsed.json);
-        results.parsing_attempts.n8n_encapsulated = { success: true, data: n8nParse };
+      // 1. Essayer de lire le body en tant que JSON
+      const bodyText = await request.text();
+      console.log('📄 Body reçu');
+      
+      // 2. Si le body contient une propriété "json", c'est du n8n
+      if (bodyText.includes('"json":')) {
+        console.log('🔧 Format n8n détecté, extraction du JSON encapsulé');
+        const tempParsed = JSON.parse(bodyText);
+        if (tempParsed.json) {
+          // C'est du JSON stringifié dans une propriété "json"
+          parsedBody = parseN8nJson(tempParsed.json);
+        } else {
+          parsedBody = tempParsed;
+        }
+      } else {
+        // 3. Sinon, parser directement
+        parsedBody = parseN8nJson(bodyText);
       }
-    } catch (e) {
-      results.parsing_attempts.n8n_encapsulated = { success: false, error: e instanceof Error ? e.message : 'Unknown error' };
+      
+    } catch (parseError) {
+      console.error('❌ Échec du parsing JSON:', parseError instanceof Error ? parseError.message : String(parseError));
+      throw new Error('Format de données invalide');
     }
-    
-    // Tentative 3: Extraction manuelle
-    const title = extractFieldValue(bodyText, 'title');
-    const excerpt = extractFieldValue(bodyText, 'excerpt');
-    const content = extractFieldValue(bodyText, 'content');
-    const category = extractFieldValue(bodyText, 'category');
-    const image = extractFieldValue(bodyText, 'image');
-    const imageAlt = extractFieldValue(bodyText, 'imageAlt');
-    const keywordsStr = extractFieldValue(bodyText, 'keywords');
-    
-    results.parsing_attempts.manual_extraction = {
-      success: true,
-      data: {
-        title: title,
-        title_length: title.length,
-        excerpt: excerpt,
-        excerpt_length: excerpt.length,
-        content_length: content.length,
-        category: category,
-        image: image,
-        imageAlt: imageAlt,
-        keywords: keywordsStr
-      }
+
+    console.log('✅ Données parsées avec succès');
+
+    // Valider les données requises
+    if (!parsedBody?.title || parsedBody.title.length < 5) {
+      throw new Error('Le titre est requis et doit contenir au moins 5 caractères');
+    }
+    if (!parsedBody?.excerpt || parsedBody.excerpt.length < 20) {
+      throw new Error('L\'extrait est requis et doit contenir au moins 20 caractères');
+    }
+    if (!parsedBody?.content || parsedBody.content.length < 100) {
+      throw new Error('Le contenu est requis et doit contenir au moins 100 caractères');
+    }
+    if (!parsedBody?.category) {
+      throw new Error('La catégorie est requise');
+    }
+
+    // Créer le slug
+    const slug = parsedBody.title
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '') // Supprimer les accents
+      .replace(/[^a-z0-9\s-]/g, '') // Garder seulement lettres, chiffres, espaces, tirets
+      .replace(/\s+/g, '-') // Remplacer espaces par tirets
+      .replace(/-+/g, '-') // Éviter les tirets multiples
+      .replace(/^-|-$/g, ''); // Supprimer tirets début/fin
+
+    // Créer l'objet article
+    const newPost: BlogPost = {
+      title: parsedBody.title,
+      excerpt: parsedBody.excerpt,
+      content: parsedBody.content,
+      date: new Date().toLocaleDateString('fr-FR', { 
+        day: 'numeric', 
+        month: 'long', 
+        year: 'numeric' 
+      }),
+      category: parsedBody.category,
+      keywords: typeof parsedBody.keywords === 'string' 
+        ? parsedBody.keywords.split(',').map((k: string) => k.trim())
+        : Array.isArray(parsedBody.keywords) 
+        ? parsedBody.keywords 
+        : [],
+      author: 'Agenzys',
+      published: true,
+      slug: slug,
+      image: parsedBody.image || '',
+      imageAlt: parsedBody.imageAlt || ''
     };
+
+    console.log('📝 Article créé:', {
+      title: newPost.title,
+      slug: newPost.slug,
+      content_length: newPost.content.length,
+      has_image: !!newPost.image
+    });
+
+    // Publier sur GitHub
+    const commitResult = await commitToGitHub(newPost);
     
-    // TOUJOURS RETOURNER SUCCESS POUR DEBUG
     return NextResponse.json({
       success: true,
-      message: '🚨 DEBUG MODE - Données reçues et analysées',
-      debug_results: results
+      message: 'Article publié avec succès sur le site',
+      slug: newPost.slug,
+      url: `https://agenzys.vercel.app/blog/${newPost.slug}`,
+      article: {
+        title: newPost.title,
+        slug: newPost.slug,
+        date: newPost.date,
+        category: newPost.category,
+        excerpt: newPost.excerpt.substring(0, 100) + (newPost.excerpt.length > 100 ? '...' : ''),
+        content_length: newPost.content.length,
+        has_image: !!newPost.image,
+        image: newPost.image,
+        imageAlt: newPost.imageAlt,
+        keywords: newPost.keywords
+      },
+      github_commit: commitResult
     });
 
   } catch (error) {
-    console.error('❌ Erreur DEBUG:', error);
+    console.error('❌ Erreur API Blog:', error);
     
     return NextResponse.json({
-      success: true, // MÊME EN CAS D'ERREUR POUR DEBUG
-      message: '🚨 DEBUG MODE - Erreur capturée',
-      error: error instanceof Error ? error.message : "Erreur inconnue"
-    });
+      success: false,
+      errors: [error instanceof Error ? error.message : "Erreur inconnue"]
+    }, { status: 400 });
   }
 }
 
 export async function GET() {
   return NextResponse.json({
-    message: '🚨 DEBUG MODE ACTIVÉ - API Blog Agenzys',
-    status: 'debug_active',
-    note: 'Cette API accepte tout et affiche tous les détails pour debugging'
+    message: 'API Blog Agenzys - Prêt pour recevoir vos articles !',
+    endpoints: {
+      POST: 'Créer un nouvel article de blog',
+    },
+    version: '2.0',
+    status: 'active'
   });
 }
