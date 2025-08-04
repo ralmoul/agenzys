@@ -152,14 +152,14 @@ const MobileNav = ({ navItems, visible }: NavbarProps) => {
   const [open, setOpen] = useState(false);
 
   const calOptions = useCalEmbed({
-    namespace: "chat-with-manu-demo",
+    namespace: CONSTANTS.CALCOM_NAMESPACE,
     styles: {
       branding: {
-        brandColor: "#000000",
+        brandColor: CONSTANTS.CALCOM_BRAND_COLOR,
       },
     },
-    hideEventTypeDetails: false,
-    layout: "month_view",
+    hideEventTypeDetails: CONSTANTS.CALCOM_HIDE_EVENT_TYPE_DETAILS,
+    layout: CONSTANTS.CALCOM_LAYOUT,
   });
 
   return (
@@ -223,9 +223,9 @@ const MobileNav = ({ navItems, visible }: NavbarProps) => {
               ))}
 
               <StarBorder
-                data-cal-namespace={calOptions.namespace}
-                data-cal-link="manu-arora-vesr9s/chat-with-manu-demo"
-                data-cal-config={`{"layout":"${calOptions.layout}"}`}
+                data-cal-namespace={CONSTANTS.CALCOM_NAMESPACE}
+                data-cal-link={CONSTANTS.CALCOM_LINK}
+                data-cal-config={`{"layout":"${CONSTANTS.CALCOM_LAYOUT}"}`}
                 as="button"
                 onClick={() => setOpen(false)}
                 className="block md:hidden w-full"
