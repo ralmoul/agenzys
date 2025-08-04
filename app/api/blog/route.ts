@@ -14,6 +14,67 @@ interface BlogPost {
   imageAlt?: string;
 }
 
+// EXTRACTION BRUTALE - TROUVE LE JSON MÊME S'IL EST CASSÉ
+function extractFieldValue(rawJson: string, fieldName: string): string {
+  // Chercher "fieldName": "
+  const searchPattern = new RegExp(`["']${fieldName}["']\\s*:\\s*["']`, 'i');
+  const match = rawJson.match(searchPattern);
+  
+  if (!match) return '';
+  
+  const startIndex = rawJson.indexOf(match[0]) + match[0].length;
+  let value = '';
+  let escapeNext = false;
+  let depth = 0;
+  
+  for (let i = startIndex; i < rawJson.length; i++) {
+    const char = rawJson[i];
+    
+    if (escapeNext) {
+      value += char;
+      escapeNext = false;
+      continue;
+    }
+    
+    if (char === '\\') {
+      escapeNext = true;
+      continue;
+    }
+    
+    // Si on trouve une quote et qu'on n'est pas dans une imbrication
+    if ((char === '"' || char === "'") && depth === 0) {
+      break;
+    }
+    
+    value += char;
+  }
+  
+  // Nettoyer les échappements
+  return value
+    .replace(/\\n/g, '\n')
+    .replace(/\\r/g, '\r')
+    .replace(/\\t/g, '\t')
+    .replace(/\\"/g, '"')
+    .replace(/\\\\/g, '\\');
+}
+
+// EXTRACTION DES KEYWORDS (format array)
+function extractKeywords(rawJson: string): string[] {
+  const keywordsMatch = rawJson.match(/["']keywords["']\s*:\s*\[([^\]]*)\]/i);
+  if (!keywordsMatch) return ['automatisation', 'n8n'];
+  
+  try {
+    // Nettoyer et parser les keywords
+    const keywordsStr = keywordsMatch[1]
+      .replace(/\\"/g, '"')
+      .replace(/'/g, '"');
+    return JSON.parse(`[${keywordsStr}]`);
+  } catch (e) {
+    console.log('⚠️ Erreur parsing keywords, utilisation par défaut');
+    return ['automatisation', 'n8n'];
+  }
+}
+
 async function commitToGitHub(blogPost: BlogPost) {
   const token = process.env.GITHUB_TOKEN;
   const repo = process.env.GITHUB_REPO || 'ralmoul/agenzys';
@@ -87,7 +148,7 @@ export async function POST(request: NextRequest) {
     console.log('📝 Requête reçue');
     
     const body = await request.json();
-    console.log('📦 Body:', JSON.stringify(body).substring(0, 100));
+    console.log('�� Body reçu');
 
     // EXTRACTION BRUTALE DES DONNÉES
     let title = 'Article n8n';
@@ -101,49 +162,30 @@ export async function POST(request: NextRequest) {
     // MÉTHODE 1: Si c'est dans body.json (format n8n)
     if (body.json) {
       const rawJson = body.json;
-      console.log('🔍 JSON brut détecté:', rawJson.substring(0, 200));
+      console.log('🔍 JSON brut détecté, longueur:', rawJson.length);
       
-      // REGEX BRUTAL POUR EXTRAIRE LES DONNÉES
-      const titleMatch = rawJson.match(/["']title["']\s*:\s*["']([^"']+)["']/i);
-      if (titleMatch) title = titleMatch[1];
+      // EXTRACTION BRUTALE AVEC NOUVELLE MÉTHODE
+      const extractedTitle = extractFieldValue(rawJson, 'title');
+      if (extractedTitle) title = extractedTitle;
       
-      const excerptMatch = rawJson.match(/["']excerpt["']\s*:\s*["']([^"']*(?:\\.[^"']*)*)/i);
-      if (excerptMatch) {
-        excerpt = excerptMatch[1]
-          .replace(/\\n/g, '\n')
-          .replace(/\\r/g, '\r')
-          .replace(/\\t/g, '\t')
-          .replace(/\\"/g, '"')
-          .replace(/\\\\/g, '\\');
-      }
+      const extractedExcerpt = extractFieldValue(rawJson, 'excerpt');
+      if (extractedExcerpt) excerpt = extractedExcerpt;
       
-      const categoryMatch = rawJson.match(/["']category["']\s*:\s*["']([^"']+)["']/i);
-      if (categoryMatch) category = categoryMatch[1];
+      const extractedContent = extractFieldValue(rawJson, 'content');
+      if (extractedContent) content = extractedContent;
       
-      // Extraction du contenu (plus complexe car il peut être long)
-      const contentMatch = rawJson.match(/["']content["']\s*:\s*["']([^"']*(?:\\.[^"']*)*)/i);
-      if (contentMatch) {
-        content = contentMatch[1]
-          .replace(/\\n/g, '\n')
-          .replace(/\\r/g, '\r')
-          .replace(/\\t/g, '\t')
-          .replace(/\\"/g, '"')
-          .replace(/\\\\/g, '\\');
-      }
+      const extractedCategory = extractFieldValue(rawJson, 'category');
+      if (extractedCategory) category = extractedCategory;
       
-      // Extraction de l'image
-      const imageMatch = rawJson.match(/["']image["']\s*:\s*["']([^"']+)["']/i);
-      if (imageMatch) image = imageMatch[1];
-
-      // Extraction des keywords
-      const keywordsMatch = rawJson.match(/["']keywords["']\s*:\s*\[([^\]]+)\]/i);
-      if (keywordsMatch) {
-        try {
-          keywords = JSON.parse(`[${keywordsMatch[1]}]`);
-        } catch (e) {
-          console.log('⚠️ Erreur parsing keywords, utilisation par défaut');
-        }
-      }
+      const extractedImage = extractFieldValue(rawJson, 'image');
+      if (extractedImage) image = extractedImage;
+      
+      const extractedImageAlt = extractFieldValue(rawJson, 'imageAlt');
+      if (extractedImageAlt) imageAlt = extractedImageAlt;
+      
+      // Keywords
+      const extractedKeywords = extractKeywords(rawJson);
+      if (extractedKeywords.length > 0) keywords = extractedKeywords;
     }
     
     // MÉTHODE 2: Si c'est direct
@@ -156,11 +198,12 @@ export async function POST(request: NextRequest) {
     if (body.imageAlt) imageAlt = body.imageAlt;
 
     console.log('✅ Données extraites:', {
-      title: title.substring(0, 50),
-      excerpt: excerpt.substring(0, 50),
+      title: title.substring(0, 50) + '...',
+      excerpt: excerpt.substring(0, 50) + '...',
       content_length: content.length,
       category,
-      image: !!image
+      keywords_count: keywords.length,
+      has_image: !!image
     });
 
     // GÉNÉRATION DU SLUG
@@ -172,7 +215,7 @@ export async function POST(request: NextRequest) {
       .replace(/\s+/g, '-')
       .replace(/-+/g, '-')
       .trim()
-      .substring(0, 100); // Limite à 100 caractères
+      .substring(0, 100);
 
     const currentDate = new Date().toLocaleDateString('fr-FR', {
       day: 'numeric',
@@ -219,7 +262,8 @@ export async function POST(request: NextRequest) {
         content_length: content.length,
         has_image: !!image,
         image: image,
-        imageAlt: imageAlt
+        imageAlt: imageAlt,
+        keywords: keywords
       },
       github_commit: commitResult
     });
@@ -252,7 +296,7 @@ export async function POST(request: NextRequest) {
 export async function GET() {
   return NextResponse.json({ 
     status: 'OK', 
-    message: 'API Blog Agenzys - Version GitHub Auto-Publish',
+    message: 'API Blog Agenzys - Version GitHub Auto-Publish + Extraction Brutale',
     timestamp: new Date().toISOString(),
     github_configured: process.env.GITHUB_TOKEN !== 'your_github_token_here'
   });
