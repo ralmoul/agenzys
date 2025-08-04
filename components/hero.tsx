@@ -105,7 +105,7 @@ export function Hero() {
         transition={{ duration: 0.2, delay: 0.5 }}
         className="relative z-20 mx-auto mt-4 max-w-lg px-4 text-center text-base/6 text-gray-600 dark:text-gray-200"
       >
-        Bénéficiez d'un système sur-mesure, directement intégrée à vos logiciels préférés. Ne changez rien : vos outils deviennent instantanément plus intelligents.
+        Bénéficiez d'un système sur-mesure, directement intégrée à vos logiciels préférés. Ne changez rien, vos outils deviennent instantanément plus intelligents.
       </motion.p>
       <motion.div
         initial={{ opacity: 0, y: 10 }}
