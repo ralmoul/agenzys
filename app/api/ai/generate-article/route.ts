@@ -107,7 +107,7 @@ async function generateArticleContent(topicData: any) {
       n: 1,
     });
 
-    const imageUrl = imageResponse.data[0]?.url || '';
+    const imageUrl = imageResponse.data?.[0]?.url || '';
 
     // 4. Alt text SEO
     const altResponse = await openai.chat.completions.create({
