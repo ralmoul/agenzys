@@ -155,7 +155,7 @@ async function generateArticleContent(topicData: any) {
     const contentMarkdown = contentResponse.choices[0]?.message?.content || '';
     
     // Convertir Markdown en HTML pour l'affichage
-    const content = marked(contentMarkdown);
+    const content = await marked(contentMarkdown);
 
     // 2. Excerpt SEO
     const excerptResponse = await openai.chat.completions.create({
