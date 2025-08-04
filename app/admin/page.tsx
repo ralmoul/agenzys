@@ -117,7 +117,10 @@ function AdminDashboard() {
     try {
       const response = await fetch('/api/ai/auto-publish', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'x-api-key': 'agenzys_admin_key_2025_secure'
+        },
         body: JSON.stringify({ force: true })
       });
       const result = await response.json();
