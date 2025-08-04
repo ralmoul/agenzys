@@ -16,10 +16,16 @@ interface BlogPost {
 
 // EXTRACTION ROBUSTE - CAPTURE TOUT LE CONTENU ET L'IMAGE
 function extractFieldValue(rawJson: string, fieldName: string): string {
+  console.log(`🔍 Extracting field: ${fieldName}`);
   const fieldPattern = new RegExp(`["']${fieldName}["']\\s*:\\s*["']`, 'i');
   const fieldMatch = rawJson.match(fieldPattern);
   
-  if (!fieldMatch) return '';
+  if (!fieldMatch) {
+    console.log(`❌ Field ${fieldName} NOT FOUND in JSON`);
+    return '';
+  }
+  
+  console.log(`✅ Field ${fieldName} FOUND, pattern:`, fieldMatch[0]);
   
   const startIndex = rawJson.indexOf(fieldMatch[0]) + fieldMatch[0].length;
   let value = '';
@@ -177,7 +183,8 @@ export async function POST(request: NextRequest) {
       // 1. Essayer de lire le body en tant que JSON
       const bodyText = await request.text();
       rawBody = bodyText;
-      console.log('📄 Body reçu (début):', bodyText.substring(0, 200) + '...');
+      console.log('📄 Body reçu COMPLET:', bodyText);
+      console.log('📏 Taille du body:', bodyText.length);
       
       // 2. Si le body contient une propriété "json", c'est du n8n
       if (bodyText.includes('"json":')) {
@@ -206,10 +213,14 @@ export async function POST(request: NextRequest) {
       const imageAlt = extractFieldValue(rawBody, 'imageAlt');
       const keywordsStr = extractFieldValue(rawBody, 'keywords');
       
-      console.log('🔧 Extraction manuelle:');
-      console.log('- Title:', title.substring(0, 50) + '...');
+      console.log('🔧 Extraction manuelle DÉTAILLÉE:');
+      console.log('- Title COMPLET:', title);
+      console.log('- Title length:', title.length);
+      console.log('- Excerpt COMPLET:', excerpt);
       console.log('- Content length:', content.length);
-      console.log('- Image:', image);
+      console.log('- Category COMPLET:', category);
+      console.log('- Image COMPLET:', image);
+      console.log('- Keywords COMPLET:', keywordsStr);
       
       parsedBody = {
         title,
