@@ -27,7 +27,15 @@ function validateBlogPost(data: any): { valid: boolean; errors: string[] } {
     errors.push('Au moins un mot-clé est requis')
   }
   
-  return { valid: errors.length === 0, errors }
+
+  // Validation optionnelle de l'image
+  if (data.image && typeof data.image !== 'string') {
+    errors.push('L\'URL de l\'image doit être une chaîne de caractères')
+  }
+
+  if (data.imageAlt && typeof data.imageAlt !== 'string') {
+    errors.push('Le texte alternatif de l\'image doit être une chaîne de caractères')
+  }  return { valid: errors.length === 0, errors }
 }
 
 // GET - Récupérer les articles (pour debug)
@@ -100,7 +108,15 @@ export async function POST(request: NextRequest) {
       category: data.category,
       keywords: data.keywords,
       author: data.author || 'Agenzys AI'
+    };
+
+    // Ajouter les champs image si fournis
+    if (data.image) {
+      newPost.image = data.image;
     }
+    if (data.imageAlt) {
+      newPost.imageAlt = data.imageAlt;
+    }    }
     
     console.log('Tentative de création de l\'article:', {
       title: newPost.title,

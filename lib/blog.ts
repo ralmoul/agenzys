@@ -11,7 +11,8 @@ export interface BlogPost {
   keywords: string[]
   author?: string
   published?: boolean
-}
+  image?: string // URL de l'image principale de l'article
+  imageAlt?: string // Texte alternatif pour l'image}
 
 // Fonction pour lire les articles depuis le fichier JSON
 function loadPosts(): BlogPost[] {
