@@ -79,6 +79,12 @@ async function commitToGitHub(blogPost: BlogPost) {
   const token = process.env.GITHUB_TOKEN;
   const repo = process.env.GITHUB_REPO || 'ralmoul/agenzys';
   
+  console.log("🔍 DEBUG TOKEN:");
+  console.log("- Token exists:", !!token);
+  console.log("- Token length:", token ? token.length : 0);
+  console.log("- Token first 4 chars:", token ? token.substring(0, 4) : "none");
+  console.log("- Token last 4 chars:", token ? token.substring(token.length - 4) : "none");
+  console.log("- Repo:", repo);
   if (!token || token === 'your_github_token_here') {
     console.log('⚠️ GITHUB_TOKEN non configuré - simulation du commit');
     return { success: true, simulated: true };
