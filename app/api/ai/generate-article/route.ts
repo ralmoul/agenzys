@@ -41,24 +41,88 @@ const ARTICLE_PROMPT = `Tu es un expert en marketing digital immobilier et réda
 
 Rédige un article de blog ULTRA-OPTIMISÉ SEO sur : {topic}
 
-CONTRAINTES SEO :
-- Longueur : 1500-2000 mots
-- Structure H1 > H2 > H3
-- Inclure naturellement : {keywords}
-- Ton professionnel, vouvoiement
-- CTA vers Agenzys tous les 400 mots
+CONTRAINTES SEO STRICTES :
+- Longueur : 2500-3500 mots MINIMUM
+- Structure H1 > H2 > H3 > H4 parfaite
+- Inclure naturellement : {keywords} (densité 1-2%)
+- Ton professionnel expert, vouvoiement
+- CTA vers Agenzys tous les 300 mots
+- Liens internes vers pages Agenzys
+- Statistiques récentes (2024-2025)
+- Exemples concrets secteur immobilier français
 
-STRUCTURE :
-1. Introduction accrocheuse + problème
-2. Pourquoi c'est crucial en 2025
-3. Défis des agences immobilières  
-4. Solutions avec Agenzys
-5. Guide pratique étape par étape
-6. Outils recommandés
-7. Erreurs à éviter
-8. Conclusion + CTA fort
+STRUCTURE OBLIGATOIRE DÉTAILLÉE :
+1. **Introduction accrocheuse** (200 mots)
+   - Hook avec statistique choc
+   - Problème concret d'agences immobilières
+   - Solution Agenzys en 2-3 phrases
+   - CTA discret vers https://agenzys.vercel.app
 
-Format en Markdown avec # ## ###`;
+2. **## Pourquoi {topic} est crucial en 2025** (400 mots)
+   - 3 statistiques récentes du marché immobilier
+   - Évolution comportement consommateurs
+   - Impact sur chiffre d'affaires agences
+   - CTA : "Découvrez comment Agenzys transforme votre approche"
+
+3. **## Les 5 défis majeurs des agences immobilières** (500 mots)
+   - Détailler chaque défi avec exemples
+   - Chiffres et impact business
+   - Témoignages fictifs mais réalistes
+
+4. **## Solutions complètes avec Agenzys** (600 mots)
+   - Comment Agenzys résout chaque problème
+   - Fonctionnalités spécifiques
+   - ROI et bénéfices mesurables
+   - CTA : "Testez gratuitement sur https://agenzys.vercel.app"
+
+5. **## Guide pratique : mise en œuvre étape par étape** (600 mots)
+   - 8-10 étapes détaillées
+   - Actions concrètes à implémenter
+   - Timeline et planning
+   - Outils complémentaires
+
+6. **## Outils et intégrations recommandés** (400 mots)
+   - Stack technologique immobilier
+   - Intégrations Agenzys (CRM, portails, etc.)
+   - Comparatif solutions marché
+
+7. **## Top 7 erreurs à éviter absolument** (400 mots)
+   - Erreurs coûteuses d'agences
+   - Comment les éviter
+   - Bonnes pratiques
+
+8. **## Études de cas et résultats clients** (300 mots)
+   - 2-3 cas concrets avec chiffres
+   - Avant/après avec Agenzys
+   - Témoignages détaillés
+
+9. **## Conclusion et plan d'action** (200 mots)
+   - Récapitulatif points clés
+   - CTA fort : "Commencez votre transformation dès aujourd'hui"
+   - Lien vers https://agenzys.vercel.app
+
+LIENS INTERNES À INTÉGRER :
+- Lien vers page principale : https://agenzys.vercel.app
+- Lien vers blog : https://agenzys.vercel.app/blog
+- Lien vers fonctionnalités : https://agenzys.vercel.app/#features
+- Lien vers tarifs : https://agenzys.vercel.app/#pricing
+- Lien vers FAQ : https://agenzys.vercel.app/#faq
+
+ÉLÉMENTS SEO AVANCÉS :
+- Utiliser des listes numérotées et à puces
+- Inclure des tableaux comparatifs
+- Ajouter des citations d'experts
+- Mentionner des marques connues (SeLoger, LeBonCoin, etc.)
+- Références à des villes françaises majeures
+- Vocabulaire technique précis mais accessible
+
+CALL-TO-ACTION VARIÉS :
+- "Découvrez Agenzys en action"
+- "Testez gratuitement pendant 14 jours"
+- "Rejoignez +500 agences qui font confiance à Agenzys"
+- "Obtenez une démo personnalisée"
+
+Format en Markdown avec # ## ### #### et **gras** pour les points importants.`;
 
 // PROMPT DALL-E pour images
 const IMAGE_PROMPT = `Professional real estate technology illustration for "{topic}". 
@@ -85,7 +149,7 @@ async function generateArticleContent(topicData: any) {
           .replace('{keywords}', topicData.keywords.join(', '))
       }],
       temperature: 0.7,
-      max_tokens: 4000,
+      max_tokens: 8000,
     });
 
     const contentMarkdown = contentResponse.choices[0]?.message?.content || '';
