@@ -51,7 +51,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
       ],
       locale: 'fr_FR',
       type: 'article',
-      publishedTime: new Date(post.date).toISOString(),
+      publishedTime: new Date().toISOString(), // Fallback sûr pour éviter Invalid time value
       authors: [post.author || 'Agenzys'],
       section: post.category,
       tags: post.keywords,
@@ -97,8 +97,8 @@ function generateStructuredData(post: any) {
     headline: post.title,
     description: post.excerpt,
     image: post.image || 'https://agenzys.vercel.app/og-image.jpg',
-    datePublished: new Date(post.date).toISOString(),
-    dateModified: new Date(post.date).toISOString(),
+          datePublished: new Date().toISOString(), // Fallback sûr
+      dateModified: new Date().toISOString(), // Fallback sûr
     author: {
       '@type': 'Organization',
       name: post.author || 'Agenzys',
