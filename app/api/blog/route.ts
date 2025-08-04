@@ -44,18 +44,40 @@ export async function POST(request: NextRequest) {
     if (body.json && typeof body.json === 'string') {
       console.log('🔧 Détection du format n8n - parsing du JSON encapsulé...');
       try {
-        data = JSON.parse(body.json);
+        // Nettoyer le JSON de tous les caractères de contrôle problématiques
+        let cleanJson = body.json
+          .replace(/\n/g, '\\n')           // Échapper les retours à la ligne
+          .replace(/\r/g, '\\r')           // Échapper les retours chariot
+          .replace(/\t/g, '\\t')           // Échapper les tabulations
+          .replace(/\f/g, '\\f')           // Échapper les form feeds
+          .replace(/\b/g, '\\b')           // Échapper les backspaces
+          .replace(/\v/g, '\\v');          // Échapper les tabulations verticales
+        
+        console.log('🧹 JSON nettoyé, tentative de parsing...');
+        data = JSON.parse(cleanJson);
         console.log('✅ JSON n8n parsé avec succès:', data);
       } catch (parseError) {
         console.error('❌ Erreur lors du parsing du JSON n8n:', parseError);
-        return NextResponse.json(
-          { 
-            success: false, 
-            error: 'Format JSON n8n invalide',
-            details: parseError instanceof Error ? parseError.message : "Erreur de parsing"
-          },
-          { status: 400 }
-        );
+        console.error('📋 JSON original (100 premiers caractères):', body.json.substring(0, 100));
+        
+        // Tentative de fallback : essayer de parser en supprimant tous les caractères de contrôle
+        try {
+          console.log('🔄 Tentative de parsing alternatif...');
+          // Remplacer tous les caractères de contrôle par des espaces
+          let fallbackJson = body.json.replace(/[\x00-\x1F\x7F]/g, ' ');
+          data = JSON.parse(fallbackJson);
+          console.log('✅ Parsing alternatif réussi:', data);
+        } catch (fallbackError) {
+          return NextResponse.json(
+            { 
+              success: false, 
+              error: 'Format JSON n8n invalide',
+              details: parseError instanceof Error ? parseError.message : "Erreur de parsing",
+              json_preview: body.json.substring(0, 200) + '...' // Les 200 premiers caractères pour debug
+            },
+            { status: 400 }
+          );
+        }
       }
     } else {
       // Format direct (pour les tests)
