@@ -232,8 +232,8 @@ const MobileNav = ({ navItems, visible }: NavbarProps) => {
       
               >
                 <span className="flex space-x-2 items-center group">
-                  <span>Réserver un appel</span>
-                  <HiArrowRight className="text-foreground group-hover:translate-x-1 stroke-[1px] h-3 w-3 mt-0.5 transition-transform duration-200" />
+                  <span className="text-white">Réserver un appel</span>
+                  <HiArrowRight className="text-white group-hover:translate-x-1 stroke-[1px] h-3 w-3 mt-0.5 transition-transform duration-200" />
                 </span>
               </StarBorder>
             </motion.div>

@@ -57,8 +57,8 @@ export function CTA() {
           data-cal-config={`{"layout":"${calOptions.layout}"}`}
         >
           <span className="flex space-x-2 items-center group">
-            <span>Réserver un appel</span>
-            <HiArrowRight className="text-foreground group-hover:translate-x-1 stroke-[1px] h-3 w-3 mt-0.5 transition-transform duration-200" />
+            <span className="md:text-foreground text-white">Réserver un appel</span>
+            <HiArrowRight className="md:text-foreground text-white group-hover:translate-x-1 stroke-[1px] h-3 w-3 mt-0.5 transition-transform duration-200" />
           </span>
         </StarBorder>
       </div>
