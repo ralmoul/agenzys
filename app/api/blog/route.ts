@@ -15,46 +15,62 @@ interface BlogPost {
 }
 
 // EXTRACTION BRUTALE - TROUVE LE JSON MÊME S'IL EST CASSÉ
+// EXTRACTION BRUTALE AMÉLIORÉE - CAPTURE TOUT LE CONTENU
 function extractFieldValue(rawJson: string, fieldName: string): string {
-  // Chercher "fieldName": "
-  const searchPattern = new RegExp(`["']${fieldName}["']\\s*:\\s*["']`, 'i');
-  const match = rawJson.match(searchPattern);
+  // Chercher le début du champ
+  const fieldPattern = new RegExp(`["']${fieldName}["']\\s*:\\s*["']`, "i");
+  const fieldMatch = rawJson.match(fieldPattern);
   
-  if (!match) return '';
+  if (!fieldMatch) return "";
   
-  const startIndex = rawJson.indexOf(match[0]) + match[0].length;
-  let value = '';
+  const startIndex = rawJson.indexOf(fieldMatch[0]) + fieldMatch[0].length;
+  let value = "";
+  let i = startIndex;
+  let braceDepth = 0;
   let escapeNext = false;
-  let depth = 0;
   
-  for (let i = startIndex; i < rawJson.length; i++) {
+  while (i < rawJson.length) {
     const char = rawJson[i];
     
     if (escapeNext) {
       value += char;
       escapeNext = false;
+      i++;
       continue;
     }
     
-    if (char === '\\') {
+    if (char === "\\") {
       escapeNext = true;
+      i++;
       continue;
     }
     
-    // Si on trouve une quote et qu'on n'est pas dans une imbrication
-    if ((char === '"' || char === "'") && depth === 0) {
-      break;
+    // Gérer les accolades dans le contenu
+    if (char === "{") braceDepth++;
+    if (char === "}") braceDepth--;
+    
+    // Si on trouve une quote
+    if (char === """ || char === "'") {
+      // Vérifier si c'est la vraie fin du champ
+      const afterQuote = rawJson.substring(i + 1, i + 20);
+      if (afterQuote.match(/^\s*[,}]/) && braceDepth === 0) {
+        // C'est la fin !
+        break;
+      }
     }
     
     value += char;
+    i++;
   }
   
   // Nettoyer les échappements
   return value
-    .replace(/\\n/g, '\n')
-    .replace(/\\r/g, '\r')
-    .replace(/\\t/g, '\t')
-    .replace(/\\"/g, '"')
+    .replace(/\\"/g, """)
+    .replace(/\\n/g, "\n")
+    .replace(/\\r/g, "\r")
+    .replace(/\\t/g, "\t")
+    .replace(/\\\\/g, "\\");
+}    .replace(/\\"/g, '"')
     .replace(/\\\\/g, '\\');
 }
 
