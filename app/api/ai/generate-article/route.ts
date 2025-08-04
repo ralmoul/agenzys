@@ -81,7 +81,7 @@ CONTRAINTES :
 - Structure H1 > H2 > H3
 - Mots-clés : {keywords} (1-2% densité)
 - CTA Agenzys tous les 300 mots
-- Liens vers https://agenzys.vercel.app
+- Liens cliquables vers Agenzys
 
 STRUCTURE :
 1. **Introduction** (200 mots) - Hook statistique + problème + solution Agenzys
@@ -94,14 +94,25 @@ STRUCTURE :
 8. **## Cas clients** (300 mots) - Résultats concrets + témoignages
 9. **## Conclusion** (200 mots) - Récap + CTA fort
 
-LIENS INTERNES :
-- https://agenzys.vercel.app
-- https://agenzys.vercel.app/blog
-- https://agenzys.vercel.app/#features
+LIENS CLIQUABLES OBLIGATOIRES :
+- [Découvrez Agenzys](https://agenzys.vercel.app)
+- [Voir nos fonctionnalités](https://agenzys.vercel.app/#features)
+- [Demander une démo](https://agenzys.vercel.app)
+- [Lire nos articles](https://agenzys.vercel.app/blog)
 
-STYLE : Professionnel, vouvoiement, stats 2024-2025, exemples français (Paris, Lyon), marques (SeLoger, LeBonCoin).
+STYLE : 
+- Professionnel, vouvoiement
+- Stats 2024-2025 récentes
+- Exemples français (Paris, Lyon, Marseille)
+- Marques connues (SeLoger, LeBonCoin, Logic-Immo)
+- Espacement entre paragraphes
 
-Format Markdown avec # ## ### et **gras**.`;
+IMPORTANT :
+- PAS de "Titre :" au début
+- Format Markdown avec # ## ###
+- Paragraphes bien espacés avec lignes vides
+- Liens en format [texte](url)
+- CTA attractifs : "Découvrez Agenzys", "Testez gratuitement", etc.`;
 
 // PROMPT DALL-E pour images
 const IMAGE_PROMPT = `Professional real estate technology illustration for "{topic}". 
@@ -409,13 +420,22 @@ async function generateExcerpt(title: string) {
 }
 
 async function generateImageAndAlt(title: string) {
-  let imageUrl = "https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80";
-  let imageAlt = `Illustration ${title}`;
+  // Images par défaut fiables pour l'immobilier
+  const defaultImages = [
+    "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1200&h=630&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1582407947304-fd86f028f716?w=1200&h=630&fit=crop&auto=format", 
+    "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1200&h=630&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1565182999561-18d7dc61c393?w=1200&h=630&fit=crop&auto=format",
+    "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200&h=630&fit=crop&auto=format"
+  ];
+  
+  let imageUrl = defaultImages[Math.floor(Math.random() * defaultImages.length)];
+  let imageAlt = `Illustration professionnelle représentant ${title}`;
   
   if (!openai) return { imageUrl, imageAlt };
   
   try {
-    // Générer image DALL-E
+    // Essayer DALL-E mais avec fallback sur images par défaut
     const imageResponse = await openai.images.generate({
       model: "dall-e-3",
       prompt: IMAGE_PROMPT.replace('{topic}', title),
@@ -424,14 +444,17 @@ async function generateImageAndAlt(title: string) {
       n: 1,
     });
     
-    imageUrl = imageResponse.data?.[0]?.url || imageUrl;
+    // Si DALL-E fonctionne, utiliser son image
+    if (imageResponse.data?.[0]?.url) {
+      imageUrl = imageResponse.data[0].url;
+    }
     
-    // Générer alt text
+    // Générer alt text optimisé
     const altResponse = await openai.chat.completions.create({
       model: "gpt-4",
       messages: [{
         role: "user",
-        content: `Alt text SEO (125 caractères max) pour image illustrant "${title}".`
+        content: `Alt text SEO optimisé (100 caractères max) pour "${title}". Inclure mots-clés immobilier, technologie, innovation.`
       }],
       temperature: 0.5,
       max_tokens: 50,
@@ -440,7 +463,8 @@ async function generateImageAndAlt(title: string) {
     imageAlt = altResponse.choices[0]?.message?.content?.replace(/"/g, '').trim() || imageAlt;
     
   } catch (error) {
-    console.error('[IMAGE] Erreur génération image:', error);
+    console.error('[IMAGE] Erreur génération image, utilisation image par défaut:', error);
+    // Garder l'image par défaut déjà sélectionnée
   }
   
   return { imageUrl, imageAlt };

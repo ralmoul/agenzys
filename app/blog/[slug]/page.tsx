@@ -82,6 +82,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   }
 }
 
+
 export function generateStaticParams() {
   const posts = getAllPosts()
   return posts.map((post) => ({
@@ -182,7 +183,14 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
             </header>
             
             <div 
-              className="text-neutral-700 dark:text-neutral-300 leading-relaxed"
+              className="text-neutral-700 dark:text-neutral-300 leading-relaxed prose prose-lg max-w-none 
+              prose-headings:text-neutral-900 dark:prose-headings:text-neutral-100
+              prose-p:mb-6 prose-p:leading-relaxed
+              prose-h2:mt-12 prose-h2:mb-6 prose-h2:text-2xl prose-h2:font-bold
+              prose-h3:mt-8 prose-h3:mb-4 prose-h3:text-xl prose-h3:font-semibold
+              prose-ul:mb-6 prose-li:mb-2
+              prose-a:text-blue-600 dark:prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline
+              prose-strong:text-neutral-900 dark:prose-strong:text-neutral-100"
               dangerouslySetInnerHTML={{ __html: post.content }}
             />
             
