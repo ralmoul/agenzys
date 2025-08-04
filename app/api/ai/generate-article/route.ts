@@ -294,7 +294,7 @@ Inclure mois/année 2025 et mot-clé principal : ${newsTopic.keywords[0]}`
     console.error('[NEWS] Erreur génération actualité:', error);
     throw error;
   }
-}`;
+}
 
 // Génération d'article avec OpenAI
 async function generateArticleContent(topicData: any) {
