@@ -140,7 +140,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Erreur POST /api/blog:', error)
     return NextResponse.json(
-      { success: false, error: 'Erreur serveur', details: error.message },
+      { success: false, error: 'Erreur serveur', details: error instanceof Error ? error.message : "Erreur inconnue" },
       { status: 500 }
     )
   }
