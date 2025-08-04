@@ -82,7 +82,7 @@ export async function POST(request: NextRequest) {
       console.log('Clés trouvées:', Object.keys(data))
       console.log('Données complètes:', JSON.stringify(data, null, 2))
     } catch (parseError) {
-      console.log('❌ JSON.parse() échoué:', parseError.message)
+      console.log('❌ JSON.parse() échoué:', parseError instanceof Error ? parseError.message : String(parseError))
       
       // Essai form-data
       try {
@@ -96,12 +96,12 @@ export async function POST(request: NextRequest) {
           throw parseError
         }
       } catch (altError) {
-        console.log('❌ Parsing alternatif échoué:', altError.message)
+        console.log('❌ Parsing alternatif échoué:', altError instanceof Error ? altError.message : String(altError))
         return NextResponse.json({
           success: false,
           error: 'Erreur de parsing',
           debug: {
-            original_error: parseError.message,
+            original_error: parseError instanceof Error ? parseError.message : String(parseError),
             content_type: headers['content-type'],
             body_preview: body.substring(0, 200),
             body_length: body.length,
