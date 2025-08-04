@@ -27,15 +27,16 @@ function validateBlogPost(data: any): { valid: boolean; errors: string[] } {
     errors.push('Au moins un mot-clé est requis')
   }
   
-
   // Validation optionnelle de l'image
   if (data.image && typeof data.image !== 'string') {
     errors.push('L\'URL de l\'image doit être une chaîne de caractères')
   }
-
+  
   if (data.imageAlt && typeof data.imageAlt !== 'string') {
     errors.push('Le texte alternatif de l\'image doit être une chaîne de caractères')
-  }  return { valid: errors.length === 0, errors }
+  }
+  
+  return { valid: errors.length === 0, errors }
 }
 
 // GET - Récupérer les articles (pour debug)
@@ -108,22 +109,23 @@ export async function POST(request: NextRequest) {
       category: data.category,
       keywords: data.keywords,
       author: data.author || 'Agenzys AI'
-    };
-
+    }
+    
     // Ajouter les champs image si fournis
     if (data.image) {
-      newPost.image = data.image;
+      (newPost as any).image = data.image
     }
     if (data.imageAlt) {
-      newPost.imageAlt = data.imageAlt;
-    }    }
+      (newPost as any).imageAlt = data.imageAlt
+    }
     
     console.log('Tentative de création de l\'article:', {
       title: newPost.title,
       excerpt_length: newPost.excerpt.length,
       content_length: newPost.content.length,
       category: newPost.category,
-      keywords_count: newPost.keywords.length
+      keywords_count: newPost.keywords.length,
+      has_image: !!data.image
     })
     
     // Ajout de l'article
@@ -139,7 +141,8 @@ export async function POST(request: NextRequest) {
         article: {
           title: newPost.title,
           slug: result.slug,
-          date: newPost.date
+          date: newPost.date,
+          image: data.image || null
         }
       }
       
@@ -156,7 +159,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Erreur POST /api/blog:', error)
     return NextResponse.json(
-      { success: false, error: 'Erreur serveur', details: error instanceof Error ? error.message : "Erreur inconnue" },
+      { success: false, error: 'Erreur serveur', details: error instanceof Error ? error.message : 'Erreur inconnue' },
       { status: 500 }
     )
   }

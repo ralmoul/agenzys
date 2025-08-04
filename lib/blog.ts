@@ -1,5 +1,5 @@
-import fs from 'fs'
-import path from 'path'
+import * as fs from 'fs'
+import * as path from 'path'
 
 export interface BlogPost {
   slug: string
@@ -11,8 +11,8 @@ export interface BlogPost {
   keywords: string[]
   author?: string
   published?: boolean
-  image?: string // URL de l'image principale de l'article
-  imageAlt?: string // Texte alternatif pour l'image}
+  image?: string
+  imageAlt?: string}
 
 // Fonction pour lire les articles depuis le fichier JSON
 function loadPosts(): BlogPost[] {
