@@ -11,7 +11,7 @@ export async function POST(request: NextRequest) {
     
     const testResults = {
       timestamp: new Date().toISOString(),
-      tests: []
+      tests: [] as any[]
     }
     
     // Test 1: Écriture dans /tmp (répertoire temporaire)
