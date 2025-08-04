@@ -155,7 +155,7 @@ async function generateArticleContent(topicData: any) {
     const contentMarkdown = contentResponse.choices[0]?.message?.content || '';
     
     // Convertir Markdown en HTML pour l'affichage
-    const content = await marked(contentMarkdown);
+    const content = String(await marked(contentMarkdown));
 
     // 2. Excerpt SEO
     const excerptResponse = await openai.chat.completions.create({
@@ -195,7 +195,7 @@ async function generateArticleContent(topicData: any) {
 
     const imageAlt = altResponse.choices[0]?.message?.content?.replace(/"/g, '').trim() || topicData.title;
 
-    console.log(`✅ Article généré: ${content.length} caractères`);
+    console.log(`✅ Article généré: ${content?.length || 0} caractères`);
 
     return {
       title: topicData.title,
