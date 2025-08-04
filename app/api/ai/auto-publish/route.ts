@@ -13,6 +13,7 @@ interface PublishingLog {
   success: boolean;
   article?: any;
   error?: string;
+  published_url?: string;
 }
 
 // VÉRIFICATION SI ON DOIT PUBLIER AUJOURD'HUI
