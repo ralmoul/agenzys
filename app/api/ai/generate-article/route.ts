@@ -137,11 +137,23 @@ AGENZYS SERVICES RÉELS (IMPORTANT) :
 
 IMPORTANT :
 - PAS de "Titre :" au début
-- Format Markdown avec # ## ###
-- Paragraphes bien espacés avec lignes vides
-- Liens en format [texte](url)
-- CTA attractifs : "Découvrez Agenzys", "Testez gratuitement", etc.
-- NE PAS inventer de fonctionnalités Agenzys !`;
+- Format HTML DIRECT (pas Markdown !)
+- Structure: <h1>, <h2>, <h3> avec emojis
+- Paragraphes: <p> bien espacés
+- Listes: <ul><li> avec icônes emoji
+- Liens: <a href="url" target="_blank" style="color: #3b82f6;">texte</a>
+- CTA boutons: <a href="url" style="background: #3b82f6; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px;">CTA</a>
+- NE PAS inventer de fonctionnalités Agenzys !
+
+EXEMPLE FORMAT HTML:
+<h1>🎯 Titre Principal</h1>
+<h2>📈 Section Important</h2>
+<p>Texte avec <strong>gras</strong> et <a href="https://agenzys.vercel.app" target="_blank" style="color: #3b82f6;">lien stylé</a>.</p>
+<ul>
+<li>🔧 Point avec emoji</li>
+<li>⚡ Autre point</li>
+</ul>
+<p><a href="https://agenzys.vercel.app" target="_blank" style="background: #3b82f6; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block;">🚀 CTA Bouton</a></p>`;
 
 // PROMPT DALL-E pour images
 const IMAGE_PROMPT = `Professional real estate technology illustration for "{topic}". 
@@ -293,10 +305,8 @@ async function generateArticleContent(topicData: any) {
       max_tokens: 7500,
     });
 
-    const contentMarkdown = contentResponse.choices[0]?.message?.content || '';
-    
-    // Convertir Markdown en HTML pour l'affichage
-    const content = String(await marked(contentMarkdown));
+    // GPT-4 génère directement du HTML structuré
+    const content = contentResponse.choices[0]?.message?.content || '';
 
     // 2. Excerpt SEO
     const excerptResponse = await openai.chat.completions.create({
