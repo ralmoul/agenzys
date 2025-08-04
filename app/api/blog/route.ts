@@ -1,87 +1,74 @@
 import { NextRequest, NextResponse } from 'next/server'
+import fs from 'fs'
+import path from 'path'
 
-// VERSION ULTRA DEBUG - ACCEPTE TOUT et log tout
+// Test pour voir où on peut écrire sur Vercel
 
 export async function POST(request: NextRequest) {
   try {
-    console.log('\n🚀 === ULTRA DEBUG N8N ===')
-    
-    // Headers complets
-    const headers = Object.fromEntries(request.headers.entries())
-    console.log('HEADERS:', JSON.stringify(headers, null, 2))
-    
-    // Body complet
     const body = await request.text()
-    console.log('BODY RAW:', body)
-    console.log('BODY LENGTH:', body.length)
+    let data = JSON.parse(body)
     
-    // Tentative de parsing
-    let parsedData: any = null
-    let parseMethod = 'none'
-    
-    // Essai 1: JSON
-    try {
-      parsedData = JSON.parse(body)
-      parseMethod = 'json'
-      console.log('✅ JSON PARSE SUCCESS')
-    } catch (e) {
-      console.log('❌ JSON parse failed')
-      
-      // Essai 2: URLSearchParams (form-data)
-      try {
-        const params = new URLSearchParams(body)
-        parsedData = Object.fromEntries(params.entries())
-        parseMethod = 'urlencoded'
-        console.log('✅ URL ENCODED PARSE SUCCESS')
-      } catch (e2) {
-        console.log('❌ URL encoded parse failed')
-        
-        // Essai 3: Multipart (si possible)
-        if (headers['content-type']?.includes('multipart')) {
-          parseMethod = 'multipart'
-          console.log('⚠️ MULTIPART detected but not parsed')
-          parsedData = { raw_body: body }
-        } else {
-          parseMethod = 'raw'
-          parsedData = { raw_body: body }
-          console.log('⚠️ Using RAW body')
-        }
-      }
+    const testResults = {
+      timestamp: new Date().toISOString(),
+      tests: []
     }
     
-    console.log('PARSE METHOD:', parseMethod)
-    console.log('PARSED DATA:', JSON.stringify(parsedData, null, 2))
+    // Test 1: Écriture dans /tmp (répertoire temporaire)
+    try {
+      const tmpFile = '/tmp/test-blog.json'
+      fs.writeFileSync(tmpFile, JSON.stringify({ test: 'data' }, null, 2))
+      const content = fs.readFileSync(tmpFile, 'utf8')
+      testResults.tests.push({
+        location: '/tmp',
+        writable: true,
+        note: 'Répertoire temporaire - fichiers supprimés après exécution'
+      })
+    } catch (e) {
+      testResults.tests.push({
+        location: '/tmp',
+        writable: false,
+        error: e.message
+      })
+    }
     
-    // Retourner TOUTES les infos pour debug
+    // Test 2: Écriture dans data/ (répertoire du projet)
+    try {
+      const projectFile = path.join(process.cwd(), 'data', 'test-write.json')
+      fs.writeFileSync(projectFile, JSON.stringify({ test: 'data' }, null, 2))
+      testResults.tests.push({
+        location: 'data/',
+        writable: true,
+        note: 'Répertoire projet - mais probablement en lecture seule sur Vercel'
+      })
+    } catch (e) {
+      testResults.tests.push({
+        location: 'data/',
+        writable: false,
+        error: e.message
+      })
+    }
+    
+    // Test 3: Variables d'environnement et processus
+    testResults.environment = {
+      platform: process.platform,
+      cwd: process.cwd(),
+      writableByNode: process.getuid ? `UID: ${process.getuid()}` : 'N/A',
+      isVercel: !!process.env.VERCEL,
+      isProduction: process.env.NODE_ENV === 'production'
+    }
+    
     return NextResponse.json({
       success: true,
-      debug_info: {
-        message: 'API Ultra Debug - Tout est accepté',
-        timestamp: new Date().toISOString(),
-        parse_method: parseMethod,
-        headers: headers,
-        body_raw: body,
-        body_parsed: parsedData,
-        content_type: headers['content-type'],
-        user_agent: headers['user-agent'],
-        body_length: body.length
-      }
+      message: 'Tests d\'écriture terminés',
+      results: testResults
     })
     
   } catch (error) {
-    console.error('ERROR:', error)
     return NextResponse.json({
       success: false,
-      error: 'Ultra debug error',
-      details: error instanceof Error ? error.message : String(error)
+      error: error.message,
+      note: 'Erreur lors des tests d\'écriture'
     }, { status: 500 })
   }
-}
-
-export async function GET() {
-  return NextResponse.json({
-    status: 'Ultra Debug API',
-    message: 'Cette API accepte tout et log tout pour diagnostiquer n8n',
-    timestamp: new Date().toISOString()
-  })
 }
