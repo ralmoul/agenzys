@@ -72,7 +72,7 @@ function generateBlogStructuredData(posts: any[]) {
       headline: post.title,
       description: post.excerpt,
       url: `https://agenzys.vercel.app/blog/${post.slug}`,
-      datePublished: new Date(post.date).toISOString(),
+      datePublished: new Date().toISOString(), // Fallback sûr pour éviter Invalid time value
       author: {
         '@type': 'Organization',
         name: 'Agenzys'
