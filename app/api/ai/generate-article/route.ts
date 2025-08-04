@@ -11,36 +11,48 @@ const openai = process.env.OPENAI_API_KEY ? new OpenAI({
 // Configuration Perplexity
 const PERPLEXITY_API_KEY = process.env.PERPLEXITY_API_KEY || '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';
 
-// SUJETS ULTRA-CIBLÉS SEO IMMOBILIER 
+// SUJETS EVERGREEN - Basés sur les VRAIS services Agenzys
 const ARTICLE_TOPICS = [
   {
-    title: "Marketing Automation Immobilier 2025 : Guide Complet pour Agences",
-    keywords: ["marketing automation immobilier", "automatisation agence immobilière", "CRM immobilier 2025"],
-    category: "Automatisation",
+    title: "Automatisation n8n : Comment Capturer et Qualifier vos Leads Immobiliers",
+    excerpt: "Gagnez 2-4h par semaine grâce à l'automatisation intelligente de la capture et qualification de leads. Intégration complète avec votre CRM existant.",
+    category: "Automatisation Leads",
+    keywords: ["capture leads automatique", "qualification IA", "n8n immobilier", "automatisation CRM", "leads qualifiés"],
     type: "evergreen"
   },
   {
-    title: "Comment Générer +300% de Leads Immobiliers avec l'IA en 2025",
-    keywords: ["leads immobilier IA", "génération prospects immobilier", "intelligence artificielle immobilier"],
-    category: "Lead Generation",
+    title: "Traitement Automatisé des Dossiers de Location : OCR et Anti-Fraude IA",
+    excerpt: "Économisez plusieurs jours par dossier grâce à l'analyse IA des documents locataires et la détection automatique de fraudes.",
+    category: "Gestion Locative",
+    keywords: ["OCR dossier location", "anti-fraude IA", "automatisation locative", "analyse documents", "n8n gestion"],
     type: "evergreen"
   },
   {
-    title: "CRM Immobilier : Top 10 des Solutions pour Doubler vos Ventes",
-    keywords: ["meilleur CRM immobilier", "logiciel gestion agence", "CRM agent immobilier"],
-    category: "CRM",
+    title: "Synchronisation CRM-Portails : Publication d'Annonces Automatisée",
+    excerpt: "Zéro erreur de publication ! Synchronisez automatiquement vos biens entre CRM et portails immobiliers (SeLoger, LeBonCoin).",
+    category: "Publication Annonces",
+    keywords: ["synchronisation CRM", "publication automatique", "portails immobiliers", "n8n annonces", "SeLoger automation"],
     type: "evergreen"
   },
   {
-    title: "SEO Immobilier Local : Dominez Google en 90 Jours",
-    keywords: ["SEO immobilier local", "référencement agence immobilière", "Google My Business immobilier"],
-    category: "SEO",
+    title: "Relances Automatisées : Réduisez de 45% vos Impayés de Loyer",
+    excerpt: "Automatisez vos appels de loyers et relances pour réduire drastiquement les impayés et la vacance locative.",
+    category: "Gestion Locative",
+    keywords: ["relances automatisées", "impayés loyer", "gestion locative automatique", "n8n loyers", "recouvrement"],
     type: "evergreen"
   },
   {
-    title: "Facebook Ads Immobilier : Stratégies qui Génèrent des Mandats",
-    keywords: ["Facebook Ads immobilier", "publicité immobilière Facebook", "campagne acquisition mandats"],
-    category: "Publicité",
+    title: "Chatbot IA 24/7 : WhatsApp et Site Web pour Agences Immobilières",
+    excerpt: "Disponibilité totale ! Répondez aux prospects 24h/24 via chatbot IA intelligent connecté à votre CRM.",
+    category: "Relation Client",
+    keywords: ["chatbot immobilier", "WhatsApp automation", "IA conversationnelle", "disponibilité 24/7", "prospect chatbot"],
+    type: "evergreen"
+  },
+  {
+    title: "Intégration n8n avec Hektor, Adapt Immo et Leizee : Guide Complet",
+    excerpt: "Connectez vos outils existants sans les changer ! Guide d'intégration complète avec les principaux logiciels immobiliers.",
+    category: "Intégrations",
+    keywords: ["intégration Hektor", "Adapt Immo automation", "Leizee n8n", "CRM intégration", "outils immobiliers"],
     type: "evergreen"
   }
 ];
@@ -87,7 +99,7 @@ STRUCTURE :
 1. **Introduction** (200 mots) - Hook statistique + problème + solution Agenzys
 2. **## Pourquoi {topic} crucial 2025** (400 mots) - Stats marché + impact CA
 3. **## 5 défis agences immobilières** (500 mots) - Défis détaillés + exemples
-4. **## Solutions Agenzys** (600 mots) - Systèmes d'automatisation invisibles + intégration outils existants + ROI + CTA
+4. **## Solutions Agenzys n8n & IA** (600 mots) - 5 automatisations principales + gains de temps mesurés + intégrations CRM + ROI + CTA
 5. **## Guide pratique étapes** (600 mots) - 8 étapes concrètes + timeline
 6. **## Outils recommandés** (400 mots) - Stack tech + intégrations
 7. **## 7 erreurs à éviter** (400 mots) - Erreurs coûteuses + bonnes pratiques
@@ -107,12 +119,21 @@ STYLE :
 - Marques connues (SeLoger, LeBonCoin, Logic-Immo)
 - Espacement entre paragraphes
 
-AGENZYS SERVICES (IMPORTANT) :
-- Systèmes d'automatisation INVISIBLES
-- Connexion directe aux outils EXISTANTS des agences
-- Facilitation des tâches répétitives
-- PAS de nouveaux outils à apprendre
-- Intégration transparente (Hektor, Leizee, Adapt Immo, etc.)
+AGENZYS SERVICES RÉELS (IMPORTANT) :
+- Solutions d'automatisation via n8n et IA
+- Suppression des tâches manuelles chronophages
+- Intégration avec CRM existants (Adapt Immo, Eudonet, Leizee, Pipedrive, Scoplan)
+- Logiciels de transaction (Hektor, Netty, Modelo)
+- Gestion locative (Ublo, Rentila, LockImmo)
+- Email/SMS marketing (Mailchimp, Sendinblue)
+- Signatures électroniques (Yousign, ImmoSign, DocuSign)
+
+5 AUTOMATISATIONS PRINCIPALES :
+1. Capture & Qualification Leads (2-4h/sem gagnées)
+2. Traitement Dossiers Location (plusieurs jours/dossier)
+3. Publication & MAJ Annonces (zéro erreurs)
+4. Relances & Gestion Locative (-45% impayés)
+5. Chatbot IA 24/7 (WhatsApp, site web)
 
 IMPORTANT :
 - PAS de "Titre :" au début
