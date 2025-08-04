@@ -87,7 +87,7 @@ STRUCTURE :
 1. **Introduction** (200 mots) - Hook statistique + problème + solution Agenzys
 2. **## Pourquoi {topic} crucial 2025** (400 mots) - Stats marché + impact CA
 3. **## 5 défis agences immobilières** (500 mots) - Défis détaillés + exemples
-4. **## Solutions Agenzys** (600 mots) - Fonctionnalités + ROI + CTA
+4. **## Solutions Agenzys** (600 mots) - Systèmes d'automatisation invisibles + intégration outils existants + ROI + CTA
 5. **## Guide pratique étapes** (600 mots) - 8 étapes concrètes + timeline
 6. **## Outils recommandés** (400 mots) - Stack tech + intégrations
 7. **## 7 erreurs à éviter** (400 mots) - Erreurs coûteuses + bonnes pratiques
@@ -107,12 +107,20 @@ STYLE :
 - Marques connues (SeLoger, LeBonCoin, Logic-Immo)
 - Espacement entre paragraphes
 
+AGENZYS SERVICES (IMPORTANT) :
+- Systèmes d'automatisation INVISIBLES
+- Connexion directe aux outils EXISTANTS des agences
+- Facilitation des tâches répétitives
+- PAS de nouveaux outils à apprendre
+- Intégration transparente (Hektor, Leizee, Adapt Immo, etc.)
+
 IMPORTANT :
 - PAS de "Titre :" au début
 - Format Markdown avec # ## ###
 - Paragraphes bien espacés avec lignes vides
 - Liens en format [texte](url)
-- CTA attractifs : "Découvrez Agenzys", "Testez gratuitement", etc.`;
+- CTA attractifs : "Découvrez Agenzys", "Testez gratuitement", etc.
+- NE PAS inventer de fonctionnalités Agenzys !`;
 
 // PROMPT DALL-E pour images
 const IMAGE_PROMPT = `Professional real estate technology illustration for "{topic}". 
