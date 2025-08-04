@@ -130,17 +130,49 @@ export async function POST(request: NextRequest) {
       throw new Error(`Erreur génération: ${generateResult.error}`);
     }
     
-    // Log du succès
+    console.log('📝 Publication de l\'article sur le blog...');
+    
+    // ÉTAPE 2: Publier l'article sur le blog
+    const publishResponse = await fetch('https://agenzys.vercel.app/api/blog', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        title: generateResult.article.title,
+        excerpt: generateResult.article.excerpt,
+        content: generateResult.article.content,
+        category: generateResult.article.category,
+        keywords: generateResult.article.keywords,
+        image: generateResult.article.image,
+        imageAlt: generateResult.article.imageAlt
+      })
+    });
+    
+    const publishResult = await publishResponse.json();
+    
+    if (!publishResult.success) {
+      throw new Error(`Erreur publication: ${publishResult.error || 'Publication échouée'}`);
+    }
+    
+    console.log('🎉 Article publié avec succès:', publishResult.url);
+    
+    // Log du succès complet
     await logPublication({
       date: new Date().toISOString(),
       success: true,
-      article: generateResult.article
+      article: generateResult.article,
+      published_url: publishResult.url
     });
     
     return NextResponse.json({
       success: true,
       message: '🎉 Article généré et publié automatiquement !',
-      publication: generateResult,
+      publication: {
+        ...generateResult,
+        published_url: publishResult.url,
+        blog_data: publishResult
+      },
       scheduled: !force,
       nextPublication: getNextPublicationDate()
     });
