@@ -73,93 +73,35 @@ const NEWS_TOPICS = [
   }
 ];
 
-// PROMPT ULTRA-OPTIMISÉ SEO pour GPT-4
-const ARTICLE_PROMPT = `Tu es un expert en marketing digital immobilier et rédacteur SEO professionnel. 
+// PROMPT OPTIMISÉ SEO pour GPT-4 (version raccourcie)
+const ARTICLE_PROMPT = `Expert SEO immobilier. Rédige article blog sur : {topic}
 
-Rédige un article de blog ULTRA-OPTIMISÉ SEO sur : {topic}
+CONTRAINTES :
+- 2000-3000 mots 
+- Structure H1 > H2 > H3
+- Mots-clés : {keywords} (1-2% densité)
+- CTA Agenzys tous les 300 mots
+- Liens vers https://agenzys.vercel.app
 
-CONTRAINTES SEO STRICTES :
-- Longueur : 2500-3500 mots MINIMUM
-- Structure H1 > H2 > H3 > H4 parfaite
-- Inclure naturellement : {keywords} (densité 1-2%)
-- Ton professionnel expert, vouvoiement
-- CTA vers Agenzys tous les 300 mots
-- Liens internes vers pages Agenzys
-- Statistiques récentes (2024-2025)
-- Exemples concrets secteur immobilier français
+STRUCTURE :
+1. **Introduction** (200 mots) - Hook statistique + problème + solution Agenzys
+2. **## Pourquoi {topic} crucial 2025** (400 mots) - Stats marché + impact CA
+3. **## 5 défis agences immobilières** (500 mots) - Défis détaillés + exemples
+4. **## Solutions Agenzys** (600 mots) - Fonctionnalités + ROI + CTA
+5. **## Guide pratique étapes** (600 mots) - 8 étapes concrètes + timeline
+6. **## Outils recommandés** (400 mots) - Stack tech + intégrations
+7. **## 7 erreurs à éviter** (400 mots) - Erreurs coûteuses + bonnes pratiques
+8. **## Cas clients** (300 mots) - Résultats concrets + témoignages
+9. **## Conclusion** (200 mots) - Récap + CTA fort
 
-STRUCTURE OBLIGATOIRE DÉTAILLÉE :
-1. **Introduction accrocheuse** (200 mots)
-   - Hook avec statistique choc
-   - Problème concret d'agences immobilières
-   - Solution Agenzys en 2-3 phrases
-   - CTA discret vers https://agenzys.vercel.app
+LIENS INTERNES :
+- https://agenzys.vercel.app
+- https://agenzys.vercel.app/blog
+- https://agenzys.vercel.app/#features
 
-2. **## Pourquoi {topic} est crucial en 2025** (400 mots)
-   - 3 statistiques récentes du marché immobilier
-   - Évolution comportement consommateurs
-   - Impact sur chiffre d'affaires agences
-   - CTA : "Découvrez comment Agenzys transforme votre approche"
+STYLE : Professionnel, vouvoiement, stats 2024-2025, exemples français (Paris, Lyon), marques (SeLoger, LeBonCoin).
 
-3. **## Les 5 défis majeurs des agences immobilières** (500 mots)
-   - Détailler chaque défi avec exemples
-   - Chiffres et impact business
-   - Témoignages fictifs mais réalistes
-
-4. **## Solutions complètes avec Agenzys** (600 mots)
-   - Comment Agenzys résout chaque problème
-   - Fonctionnalités spécifiques
-   - ROI et bénéfices mesurables
-   - CTA : "Testez gratuitement sur https://agenzys.vercel.app"
-
-5. **## Guide pratique : mise en œuvre étape par étape** (600 mots)
-   - 8-10 étapes détaillées
-   - Actions concrètes à implémenter
-   - Timeline et planning
-   - Outils complémentaires
-
-6. **## Outils et intégrations recommandés** (400 mots)
-   - Stack technologique immobilier
-   - Intégrations Agenzys (CRM, portails, etc.)
-   - Comparatif solutions marché
-
-7. **## Top 7 erreurs à éviter absolument** (400 mots)
-   - Erreurs coûteuses d'agences
-   - Comment les éviter
-   - Bonnes pratiques
-
-8. **## Études de cas et résultats clients** (300 mots)
-   - 2-3 cas concrets avec chiffres
-   - Avant/après avec Agenzys
-   - Témoignages détaillés
-
-9. **## Conclusion et plan d'action** (200 mots)
-   - Récapitulatif points clés
-   - CTA fort : "Commencez votre transformation dès aujourd'hui"
-   - Lien vers https://agenzys.vercel.app
-
-LIENS INTERNES À INTÉGRER :
-- Lien vers page principale : https://agenzys.vercel.app
-- Lien vers blog : https://agenzys.vercel.app/blog
-- Lien vers fonctionnalités : https://agenzys.vercel.app/#features
-- Lien vers tarifs : https://agenzys.vercel.app/#pricing
-- Lien vers FAQ : https://agenzys.vercel.app/#faq
-
-ÉLÉMENTS SEO AVANCÉS :
-- Utiliser des listes numérotées et à puces
-- Inclure des tableaux comparatifs
-- Ajouter des citations d'experts
-- Mentionner des marques connues (SeLoger, LeBonCoin, etc.)
-- Références à des villes françaises majeures
-- Vocabulaire technique précis mais accessible
-
-CALL-TO-ACTION VARIÉS :
-- "Découvrez Agenzys en action"
-- "Testez gratuitement pendant 14 jours"
-- "Rejoignez +500 agences qui font confiance à Agenzys"
-- "Obtenez une démo personnalisée"
-
-Format en Markdown avec # ## ### #### et **gras** pour les points importants.`;
+Format Markdown avec # ## ### et **gras**.`;
 
 // PROMPT DALL-E pour images
 const IMAGE_PROMPT = `Professional real estate technology illustration for "{topic}". 
@@ -226,33 +168,25 @@ async function generateNewsArticle(newsTopic: any) {
       throw new Error('OpenAI not configured');
     }
     
-    const hybridPrompt = `Tu es un expert en rédaction d'articles d'actualité immobilière SEO.
+    const hybridPrompt = `Rédacteur actualité immobilière SEO. Article blog basé sur :
 
-MISSION: Rédige un article de blog d'actualité ULTRA-OPTIMISÉ SEO basé sur ces informations récentes.
-
-INFORMATIONS D'ACTUALITÉ (Perplexity):
+ACTUALITÉS:
 ${latestNews}
 
-MOTS-CLÉS À INTÉGRER: ${newsTopic.keywords.join(', ')}
+MOTS-CLÉS: ${newsTopic.keywords.join(', ')}
 
-STRUCTURE ARTICLE ACTUALITÉ:
-1. **Titre accrocheur** avec date/mois 2025
-2. **Introduction** (150 mots) - Résumé des points clés + impact Agenzys
-3. **## Les points clés de l'actualité** (400 mots) - Détail des infos avec dates
-4. **## Impact pour les agences immobilières** (400 mots) - Conséquences pratiques
-5. **## Comment Agenzys vous aide à vous adapter** (400 mots) - Solutions spécifiques
-6. **## Analyse d'expert et recommandations** (300 mots) - Conseils stratégiques
-7. **## Conclusion et plan d'action** (200 mots) - CTA Agenzys
+STRUCTURE (1800-2200 mots):
+1. **Titre** avec date 2025
+2. **Introduction** (150 mots) - Points clés + Agenzys
+3. **## Actualité détaillée** (400 mots) - Infos + dates
+4. **## Impact agences** (400 mots) - Conséquences pratiques
+5. **## Solutions Agenzys** (400 mots) - Adaptations
+6. **## Analyse expert** (300 mots) - Recommandations
+7. **## Conclusion** (200 mots) - CTA
 
-CONTRAINTES SEO:
-- 1800-2200 mots
-- Inclure dates précises et sources
-- Ton journalistique mais expert
-- CTA Agenzys tous les 300 mots
-- Liens vers https://agenzys.vercel.app
-- Chiffres et statistiques mis en avant
+STYLE: Journalistique expert, dates précises, CTA tous les 300 mots, liens https://agenzys.vercel.app
 
-Format Markdown avec # ## ### et **gras**.`;
+Format Markdown # ## ###.`;
 
     const articleResponse = await openai.chat.completions.create({
       model: "gpt-4",
@@ -261,7 +195,7 @@ Format Markdown avec # ## ### et **gras**.`;
         content: hybridPrompt
       }],
       temperature: 0.6,
-      max_tokens: 8000,
+      max_tokens: 7500,
     });
 
     const articleContent = String(await marked(articleResponse.choices[0]?.message?.content || ''));
@@ -316,7 +250,7 @@ async function generateArticleContent(topicData: any) {
           .replace('{keywords}', topicData.keywords.join(', '))
       }],
       temperature: 0.7,
-      max_tokens: 8000,
+      max_tokens: 7500,
     });
 
     const contentMarkdown = contentResponse.choices[0]?.message?.content || '';
