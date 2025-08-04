@@ -1,3 +1,6 @@
+import fs from 'fs'
+import path from 'path'
+
 export interface BlogPost {
   slug: string
   title: string
@@ -6,141 +9,82 @@ export interface BlogPost {
   date: string
   category: string
   keywords: string[]
+  author?: string
+  published?: boolean
 }
 
-// Articles de blog optimisés SEO pour l'immobilier
-const posts: BlogPost[] = [
-  {
-    slug: "automatisation-leads-immobilier-2024",
-    title: "Comment Automatiser la Génération de Leads Immobiliers en 2024",
-    excerpt: "Découvrez les meilleures stratégies pour automatiser vos leads immobiliers sans perdre la dimension humaine. Guide complet avec exemples concrets.",
-    content: `
-      <h2>Pourquoi automatiser vos leads immobiliers ?</h2>
-      <p>Dans un marché immobilier de plus en plus concurrentiel, l'automatisation des leads devient indispensable pour les agences qui veulent rester compétitives. Voici pourquoi :</p>
-      
-      <h3>1. Gain de temps considérable</h3>
-      <p>L'automatisation vous permet de traiter 3x plus de prospects en divisant par 2 le temps consacré aux tâches répétitives.</p>
-      
-      <h3>2. Suivi client optimisé</h3>
-      <p>Fini les relances oubliées ! Vos prospects sont suivis automatiquement selon des scénarios prédéfinis.</p>
-      
-      <h2>Les outils d'automatisation compatibles</h2>
-      <p>Agenzys s'intègre parfaitement avec vos CRM existants :</p>
-      <ul>
-        <li><strong>Hektor CRM</strong> : Automatisation des relances et scoring des prospects</li>
-        <li><strong>Adapt Immo</strong> : Synchronisation automatique des biens et contacts</li>
-        <li><strong>Leizee</strong> : Workflows personnalisés pour le suivi client</li>
-      </ul>
-      
-      <h2>Mise en œuvre pratique</h2>
-      <p>Notre processus en 3 étapes garantit une intégration sans friction :</p>
-      <ol>
-        <li>Audit de vos processus actuels</li>
-        <li>Configuration sur-mesure des automatisations</li>
-        <li>Formation de vos équipes (optionnelle)</li>
-      </ol>
-      
-      <h2>Résultats mesurables</h2>
-      <p>Nos clients observent en moyenne :</p>
-      <ul>
-        <li>+40% de leads qualifiés</li>
-        <li>-60% de temps administratif</li>
-        <li>+25% de taux de conversion</li>
-      </ul>
-    `,
-    date: "3 février 2025",
-    category: "Automatisation",
-    keywords: ["leads immobilier", "automatisation", "CRM immobilier", "Hektor", "Adapt Immo", "Leizee"]
-  },
-  {
-    slug: "optimiser-crm-immobilier-productivite",
-    title: "5 Façons d'Optimiser votre CRM Immobilier pour Doubler votre Productivité",
-    excerpt: "Transformez votre CRM en machine de guerre commerciale. Astuces concrètes pour maximiser votre ROI avec Hektor, Adapt Immo et autres.",
-    content: `
-      <h2>Le CRM, cœur de votre productivité</h2>
-      <p>Un CRM bien optimisé peut transformer radicalement vos performances commerciales. Voici comment exploiter tout son potentiel.</p>
-      
-      <h3>1. Automatiser la saisie des données</h3>
-      <p>Éliminez la double saisie grâce à des intégrations intelligentes entre vos outils.</p>
-      
-      <h3>2. Créer des workflows sur-mesure</h3>
-      <p>Définissez des parcours automatisés selon le type de prospect et leur niveau d'intérêt.</p>
-      
-      <h3>3. Exploiter la data pour scorer vos prospects</h3>
-      <p>Utilisez l'intelligence artificielle pour identifier vos prospects les plus prometteurs.</p>
-      
-      <h3>4. Synchroniser tous vos canaux</h3>
-      <p>Centralisez les interactions : email, téléphone, SMS, réseaux sociaux.</p>
-      
-      <h3>5. Automatiser le reporting</h3>
-      <p>Générez automatiquement vos tableaux de bord et rapports d'activité.</p>
-      
-      <h2>Cas concret : Agence Durand</h2>
-      <p>L'agence Durand a multiplié par 2 ses ventes en optimisant son CRM Hektor :</p>
-      <ul>
-        <li>Automatisation des relances : +30% de rappels</li>
-        <li>Scoring automatique : Focus sur les meilleurs prospects</li>
-        <li>Intégration portails : Synchronisation automatique des biens</li>
-      </ul>
-    `,
-    date: "1er février 2025",
-    category: "CRM",
-    keywords: ["CRM immobilier", "productivité", "optimisation", "Hektor CRM", "workflow"]
-  },
-  {
-    slug: "integration-transparente-outils-immobilier",
-    title: "Intégration Transparente : Comment Connecter Tous vos Outils Immobiliers",
-    excerpt: "Guide complet pour créer un écosystème digital fluide dans votre agence. Connectez CRM, portails, comptabilité sans complexité technique.",
-    content: `
-      <h2>L'écosystème digital moderne</h2>
-      <p>Une agence immobilière moderne utilise en moyenne 8 à 12 outils différents. L'enjeu : les faire communiquer ensemble.</p>
-      
-      <h2>Les intégrations essentielles</h2>
-      
-      <h3>CRM ↔ Portails immobiliers</h3>
-      <p>Synchronisation automatique des biens entre votre CRM et :</p>
-      <ul>
-        <li>SeLoger</li>
-        <li>LeBonCoin</li>
-        <li>Logic-Immo</li>
-        <li>Bien'ici</li>
-      </ul>
-      
-      <h3>CRM ↔ Outils de communication</h3>
-      <p>Centralisez toutes vos interactions :</p>
-      <ul>
-        <li>Email marketing (Mailchimp, Sendinblue)</li>
-        <li>SMS (SMS Factor, Octopush)</li>
-        <li>Téléphonie (RingCentral, Aircall)</li>
-      </ul>
-      
-      <h3>CRM ↔ Comptabilité</h3>
-      <p>Automatisez la facturation et le suivi :</p>
-      <ul>
-        <li>Sage</li>
-        <li>Cegid</li>
-        <li>QuickBooks</li>
-      </ul>
-      
-      <h2>Bénéfices mesurables</h2>
-      <p>Une intégration réussie apporte :</p>
-      <ul>
-        <li><strong>-70% d'erreurs de saisie</strong> : Plus de double saisie</li>
-        <li><strong>+50% de réactivité</strong> : Information temps réel</li>
-        <li><strong>-3h/jour/agent</strong> : Automatisation des tâches</li>
-      </ul>
-    `,
-    date: "30 janvier 2025",
-    category: "Intégration",
-    keywords: ["intégration outils", "écosystème digital", "automatisation", "portails immobiliers"]
+// Fonction pour lire les articles depuis le fichier JSON
+function loadPosts(): BlogPost[] {
+  try {
+    const filePath = path.join(process.cwd(), 'data', 'blog-posts.json')
+    const fileContents = fs.readFileSync(filePath, 'utf8')
+    const posts = JSON.parse(fileContents) as BlogPost[]
+    return posts.filter(post => post.published !== false)
+  } catch (error) {
+    console.error('Erreur lors du chargement des articles:', error)
+    return []
   }
-]
+}
+
+// Fonction pour sauvegarder les articles dans le fichier JSON
+export function savePosts(posts: BlogPost[]): boolean {
+  try {
+    const filePath = path.join(process.cwd(), 'data', 'blog-posts.json')
+    fs.writeFileSync(filePath, JSON.stringify(posts, null, 2), 'utf8')
+    return true
+  } catch (error) {
+    console.error('Erreur lors de la sauvegarde des articles:', error)
+    return false
+  }
+}
+
+// Fonction pour ajouter un nouvel article
+export function addPost(newPost: Omit<BlogPost, 'slug'>): { success: boolean; slug?: string; error?: string } {
+  try {
+    // Génération automatique du slug
+    const slug = newPost.title
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '') // Supprime les accents
+      .replace(/[^a-z0-9\s-]/g, '') // Supprime les caractères spéciaux
+      .replace(/\s+/g, '-') // Remplace les espaces par des tirets
+      .replace(/-+/g, '-') // Supprime les tirets multiples
+      .trim()
+    
+    const posts = loadPosts()
+    
+    // Vérification que le slug n'existe pas déjà
+    if (posts.find(post => post.slug === slug)) {
+      return { success: false, error: 'Un article avec ce titre existe déjà' }
+    }
+    
+    const fullPost: BlogPost = {
+      ...newPost,
+      slug,
+      published: true,
+      author: newPost.author || 'Agenzys'
+    }
+    
+    posts.unshift(fullPost) // Ajoute en première position
+    
+    const saved = savePosts(posts)
+    if (saved) {
+      return { success: true, slug }
+    } else {
+      return { success: false, error: 'Erreur lors de la sauvegarde' }
+    }
+  } catch (error) {
+    return { success: false, error: 'Erreur lors de l\'ajout de l\'article' }
+  }
+}
 
 export function getAllPosts(): BlogPost[] {
+  const posts = loadPosts()
   return posts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
 }
 
 export function getPostBySlug(slug: string): BlogPost | undefined {
+  const posts = loadPosts()
   return posts.find(post => post.slug === slug)
 }
 
