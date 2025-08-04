@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
 
-// Configuration OpenAI
-const openai = new OpenAI({
+// Configuration OpenAI (avec fallback pour éviter erreur build)
+const openai = process.env.OPENAI_API_KEY ? new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
-});
+}) : null;
 
 // SUJETS ULTRA-CIBLÉS SEO IMMOBILIER 
 const ARTICLE_TOPICS = [
@@ -68,6 +68,11 @@ blue and orange colors, no text, 16:9 ratio, professional lighting.`;
 async function generateArticleContent(topicData: any) {
   try {
     console.log(`🤖 Génération GPT-4: "${topicData.title}"`);
+    
+    // Vérifier si OpenAI est disponible
+    if (!openai) {
+      throw new Error('OpenAI not configured');
+    }
     
     // 1. Contenu principal
     const contentResponse = await openai.chat.completions.create({
