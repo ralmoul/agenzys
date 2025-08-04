@@ -201,6 +201,29 @@ export async function POST(request: NextRequest) {
     // Publier sur GitHub
     const commitResult = await commitToGitHub(newPost);
     
+    // Notifier Google Search Console automatiquement
+    const articleUrl = `https://agenzys.vercel.app/blog/${newPost.slug}`;
+    let seoNotification = null;
+    
+    try {
+      const seoResponse = await fetch('https://agenzys.vercel.app/api/seo/notify-google', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          urls: [
+            articleUrl,
+            'https://agenzys.vercel.app/blog',
+            'https://agenzys.vercel.app/sitemap.xml'
+          ]
+        })
+      });
+      seoNotification = await seoResponse.json();
+      console.log('🔔 Google notifié automatiquement');
+    } catch (error) {
+      console.error('⚠️ Erreur notification SEO:', error);
+      seoNotification = { success: false, error: 'SEO notification failed' };
+    }
+    
     return NextResponse.json({
       success: true,
       message: 'Article publié avec succès sur le site',
@@ -218,7 +241,8 @@ export async function POST(request: NextRequest) {
         imageAlt: newPost.imageAlt,
         keywords: newPost.keywords
       },
-      github_commit: commitResult
+      github_commit: commitResult,
+      seo_notification: seoNotification
     });
 
   } catch (error) {

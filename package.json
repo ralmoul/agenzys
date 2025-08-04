@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "seo:check": "node scripts/seo-check.js",
+    "seo:audit": "npm run seo:check && echo '✅ Audit SEO terminé'"
   },
   "dependencies": {
     "@calcom/embed-react": "^1.5.0",
