@@ -16,5 +16,24 @@
     ],
     "author": "Agenzys",
     "published": true
+  },
+  {
+    "title": "Synchronisation CRM-Portails : Publication d'Annonces Automatisée",
+    "excerpt": "Guide complet sur synchronisation crm-portails : publication d'annonces automatisée. Stratégies éprouvées et solutions Agenzys pour transformer votre agence immobilière.",
+    "content": "# Synchronisation CRM-Portails : Publication d'Annonces Automatisée\n\n## Introduction\n\nArticle en cours de génération par notre IA. Contenu de qualité arrive bientôt !",
+    "date": "4 août 2025",
+    "category": "Publication Annonces",
+    "keywords": [
+      "synchronisation CRM",
+      "publication automatique",
+      "portails immobiliers",
+      "n8n annonces",
+      "SeLoger automation"
+    ],
+    "author": "Agenzys",
+    "published": true,
+    "slug": "synchronisation-crm-portails-publication-dannonces-automatisee",
+    "image": "https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80",
+    "imageAlt": "Illustration Synchronisation CRM-Portails : Publication d'Annonces Automatisée"
   }
 ]
