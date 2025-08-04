@@ -14,17 +14,15 @@ interface BlogPost {
   imageAlt?: string;
 }
 
-// EXTRACTION BRUTALE - TROUVE LE JSON MÊME S'IL EST CASSÉ
-// EXTRACTION BRUTALE AMÉLIORÉE - CAPTURE TOUT LE CONTENU
+// EXTRACTION ROBUSTE - CAPTURE TOUT LE CONTENU ET L'IMAGE
 function extractFieldValue(rawJson: string, fieldName: string): string {
-  // Chercher le début du champ
-  const fieldPattern = new RegExp(`["']${fieldName}["']\\s*:\\s*["']`, "i");
+  const fieldPattern = new RegExp(`["']${fieldName}["']\\s*:\\s*["']`, 'i');
   const fieldMatch = rawJson.match(fieldPattern);
   
-  if (!fieldMatch) return "";
+  if (!fieldMatch) return '';
   
   const startIndex = rawJson.indexOf(fieldMatch[0]) + fieldMatch[0].length;
-  let value = "";
+  let value = '';
   let i = startIndex;
   let braceDepth = 0;
   let escapeNext = false;
@@ -39,23 +37,22 @@ function extractFieldValue(rawJson: string, fieldName: string): string {
       continue;
     }
     
-    if (char === "\\") {
+    if (char === '\\') {
       escapeNext = true;
       i++;
       continue;
     }
     
     // Gérer les accolades dans le contenu
-    if (char === "{") braceDepth++;
-    if (char === "}") braceDepth--;
+    if (char === '{') braceDepth++;
+    if (char === '}') braceDepth--;
     
-    // Si on trouve une quote
-    if (char === """ || char === "'") {
-      // Vérifier si c'est la vraie fin du champ
-      const afterQuote = rawJson.substring(i + 1, i + 20);
-      if (afterQuote.match(/^\s*[,}]/) && braceDepth === 0) {
-        // C'est la fin !
-        break;
+    // Si on trouve une quote, vérifier si c'est la fin du champ
+    if (char === '"' || char === "'") {
+      // Regarder ce qui suit pour voir si c'est vraiment la fin
+      const afterQuote = rawJson.substring(i + 1, i + 10).trim();
+      if ((afterQuote.startsWith(',') || afterQuote.startsWith('}') || afterQuote === '') && braceDepth === 0) {
+        break; // C'est la fin du champ
       }
     }
     
@@ -65,42 +62,44 @@ function extractFieldValue(rawJson: string, fieldName: string): string {
   
   // Nettoyer les échappements
   return value
-    .replace(/\\"/g, """)
-    .replace(/\\n/g, "\n")
-    .replace(/\\r/g, "\r")
-    .replace(/\\t/g, "\t")
-    .replace(/\\\\/g, "\\");
-}    .replace(/\\"/g, '"')
+    .replace(/\\"/g, '"')
+    .replace(/\\n/g, '\n')
+    .replace(/\\r/g, '\r')
+    .replace(/\\t/g, '\t')
     .replace(/\\\\/g, '\\');
 }
 
-// EXTRACTION DES KEYWORDS (format array)
-function extractKeywords(rawJson: string): string[] {
-  const keywordsMatch = rawJson.match(/["']keywords["']\s*:\s*\[([^\]]*)\]/i);
-  if (!keywordsMatch) return ['automatisation', 'n8n'];
-  
+// Fonction pour parser le JSON de n8n (avec échappements doubles)
+function parseN8nJson(jsonString: string): any {
   try {
-    // Nettoyer et parser les keywords
-    const keywordsStr = keywordsMatch[1]
-      .replace(/\\"/g, '"')
-      .replace(/'/g, '"');
-    return JSON.parse(`[${keywordsStr}]`);
+    // D'abord, tenter un parsing normal
+    return JSON.parse(jsonString);
   } catch (e) {
-    console.log('⚠️ Erreur parsing keywords, utilisation par défaut');
-    return ['automatisation', 'n8n'];
+    try {
+      // Si ça échoue, essayer de corriger les double-échappements
+      const unescaped = jsonString
+        .replace(/\\\\n/g, '\\n')
+        .replace(/\\\\r/g, '\\r')
+        .replace(/\\\\t/g, '\\t')
+        .replace(/\\\\"/g, '\\"');
+      
+      return JSON.parse(unescaped);
+    } catch (e2) {
+      // En dernier recours, extraction manuelle
+      console.log('🔧 Parsing manuel nécessaire');
+      return null;
+    }
   }
 }
 
+// Fonction pour commiter vers GitHub
 async function commitToGitHub(blogPost: BlogPost) {
   const token = process.env.GITHUB_TOKEN;
   const repo = process.env.GITHUB_REPO || 'ralmoul/agenzys';
-  
-  console.log("🔍 DEBUG TOKEN:");
-  console.log("- Token exists:", !!token);
-  console.log("- Token length:", token ? token.length : 0);
-  console.log("- Token first 4 chars:", token ? token.substring(0, 4) : "none");
-  console.log("- Token last 4 chars:", token ? token.substring(token.length - 4) : "none");
-  console.log("- Repo:", repo);
+  const owner = repo.split('/')[0];
+  const path = 'data/blog-posts.json';
+  const branch = 'main';
+
   if (!token || token === 'your_github_token_here') {
     console.log('⚠️ GITHUB_TOKEN non configuré - simulation du commit');
     return { success: true, simulated: true };
@@ -108,229 +107,217 @@ async function commitToGitHub(blogPost: BlogPost) {
 
   try {
     // 1. Lire le fichier blog-posts.json actuel
-    const getFileUrl = `https://api.github.com/repos/${repo}/contents/data/blog-posts.json`;
+    const getFileUrl = `https://api.github.com/repos/${repo}/contents/${path}`;
     const getResponse = await fetch(getFileUrl, {
       headers: {
-        'Authorization': `Bearer ${token}`,
+        'Authorization': `token ${token}`,
         'Accept': 'application/vnd.github.v3+json',
+        'User-Agent': 'Next.js API'
       },
     });
 
-    let currentPosts: BlogPost[] = [];
-    let sha = '';
-
-    if (getResponse.ok) {
-      const fileData = await getResponse.json();
-      const content = Buffer.from(fileData.content, 'base64').toString('utf-8');
-      currentPosts = JSON.parse(content);
-      sha = fileData.sha;
+    if (!getResponse.ok) {
+      const errorText = await getResponse.text();
+      console.error(`Failed to get file content: ${getResponse.status} - ${errorText}`);
+      throw new Error(`Failed to get file content: ${getResponse.status} - ${errorText}`);
     }
 
-    // 2. Ajouter le nouveau post
-    currentPosts.unshift(blogPost); // Ajouter au début
+    const fileContent = await getResponse.json();
+    const sha = fileContent.sha;
+    const existingContent = Buffer.from(fileContent.content, 'base64').toString('utf8');
+    const existingPosts: BlogPost[] = JSON.parse(existingContent);
 
-    // 3. Encoder le nouveau contenu
-    const newContent = JSON.stringify(currentPosts, null, 2);
+    // 2. Ajouter le nouvel article
+    const updatedPosts = [...existingPosts, blogPost];
+    const newContent = JSON.stringify(updatedPosts, null, 2);
     const encodedContent = Buffer.from(newContent).toString('base64');
 
-    // 4. Commit sur GitHub
-    const commitUrl = `https://api.github.com/repos/${repo}/contents/data/blog-posts.json`;
+    // 3. Commiter les changements
+    const commitUrl = `https://api.github.com/repos/${repo}/contents/${path}`;
     const commitResponse = await fetch(commitUrl, {
       method: 'PUT',
       headers: {
-        'Authorization': `Bearer ${token}`,
+        'Authorization': `token ${token}`,
         'Accept': 'application/vnd.github.v3+json',
         'Content-Type': 'application/json',
+        'User-Agent': 'Next.js API'
       },
       body: JSON.stringify({
-        message: `📝 Nouvel article: ${blogPost.title.substring(0, 50)}...`,
+        message: `📝 Nouvel article: ${blogPost.title}`,
         content: encodedContent,
         sha: sha,
+        branch: branch,
       }),
     });
 
-    if (commitResponse.ok) {
-      console.log('✅ Article commité sur GitHub avec succès');
-      return { success: true, simulated: false };
-    } else {
-      const error = await commitResponse.text();
-      console.error('❌ Erreur commit GitHub:', error);
-      return { success: false, error: error };
+    if (!commitResponse.ok) {
+      const errorText = await commitResponse.text();
+      console.error(`Failed to commit to GitHub: ${commitResponse.status} - ${errorText}`);
+      return { success: false, simulated: false, error: errorText };
     }
 
+    const commitData = await commitResponse.json();
+    console.log('✅ Commit GitHub réussi:', commitData.commit.html_url);
+    return { success: true, simulated: false, commitUrl: commitData.commit.html_url };
+
   } catch (error) {
-    console.error('❌ Erreur GitHub API:', error);
-    return { success: false, error: error instanceof Error ? error.message : 'Erreur inconnue' };
+    console.error('❌ Erreur lors du commit GitHub:', error);
+    return { success: false, simulated: false, error: error instanceof Error ? error.message : String(error) };
   }
 }
 
-// API ULTRA PERMISSIVE - ACCEPTE TOUT DE N8N
 export async function POST(request: NextRequest) {
   try {
-    console.log('📝 Requête reçue');
+    console.log('📝 API Blog - Nouveau POST reçu');
     
-    const body = await request.json();
-    console.log('�� Body reçu');
-
-    // EXTRACTION BRUTALE DES DONNÉES
-    let title = 'Article n8n';
-    let excerpt = 'Extrait généré automatiquement';
-    let content = 'Contenu de l\'article créé via n8n';
-    let category = 'automatisation';
-    let keywords = ['n8n', 'automatisation'];
-    let image = '';
-    let imageAlt = '';
-
-    // MÉTHODE 1: Si c'est dans body.json (format n8n)
-    if (body.json) {
-      const rawJson = body.json;
-      console.log('🔍 JSON brut détecté, longueur:', rawJson.length);
+    let parsedBody;
+    let rawBody = '';
+    
+    try {
+      // 1. Essayer de lire le body en tant que JSON
+      const bodyText = await request.text();
+      rawBody = bodyText;
+      console.log('📄 Body reçu (début):', bodyText.substring(0, 200) + '...');
       
-      // EXTRACTION BRUTALE AVEC NOUVELLE MÉTHODE
-      const extractedTitle = extractFieldValue(rawJson, 'title');
-      if (extractedTitle) title = extractedTitle;
+      // 2. Si le body contient une propriété "json", c'est du n8n
+      if (bodyText.includes('"json":')) {
+        console.log('🔧 Format n8n détecté, extraction du JSON encapsulé');
+        const tempParsed = JSON.parse(bodyText);
+        if (tempParsed.json) {
+          // C'est du JSON stringifié dans une propriété "json"
+          parsedBody = parseN8nJson(tempParsed.json);
+        } else {
+          parsedBody = tempParsed;
+        }
+      } else {
+        // 3. Sinon, parser directement
+        parsedBody = parseN8nJson(bodyText);
+      }
       
-      const extractedExcerpt = extractFieldValue(rawJson, 'excerpt');
-      if (extractedExcerpt) excerpt = extractedExcerpt;
+    } catch (parseError) {
+      console.log('❌ Échec du parsing JSON classique, extraction manuelle');
       
-      const extractedContent = extractFieldValue(rawJson, 'content');
-      if (extractedContent) content = extractedContent;
+      // Extraction manuelle des champs
+      const title = extractFieldValue(rawBody, 'title');
+      const excerpt = extractFieldValue(rawBody, 'excerpt');
+      const content = extractFieldValue(rawBody, 'content');
+      const category = extractFieldValue(rawBody, 'category');
+      const image = extractFieldValue(rawBody, 'image');
+      const imageAlt = extractFieldValue(rawBody, 'imageAlt');
+      const keywordsStr = extractFieldValue(rawBody, 'keywords');
       
-      const extractedCategory = extractFieldValue(rawJson, 'category');
-      if (extractedCategory) category = extractedCategory;
+      console.log('🔧 Extraction manuelle:');
+      console.log('- Title:', title.substring(0, 50) + '...');
+      console.log('- Content length:', content.length);
+      console.log('- Image:', image);
       
-      const extractedImage = extractFieldValue(rawJson, 'image');
-      if (extractedImage) image = extractedImage;
-      
-      const extractedImageAlt = extractFieldValue(rawJson, 'imageAlt');
-      if (extractedImageAlt) imageAlt = extractedImageAlt;
-      
-      // Keywords
-      const extractedKeywords = extractKeywords(rawJson);
-      if (extractedKeywords.length > 0) keywords = extractedKeywords;
+      parsedBody = {
+        title,
+        excerpt,
+        content,
+        category,
+        image,
+        imageAlt,
+        keywords: keywordsStr
+      };
     }
-    
-    // MÉTHODE 2: Si c'est direct
-    if (body.title) title = body.title;
-    if (body.excerpt) excerpt = body.excerpt;
-    if (body.content) content = body.content;
-    if (body.category) category = body.category;
-    if (body.keywords) keywords = body.keywords;
-    if (body.image) image = body.image;
-    if (body.imageAlt) imageAlt = body.imageAlt;
 
-    console.log('✅ Données extraites:', {
-      title: title.substring(0, 50) + '...',
-      excerpt: excerpt.substring(0, 50) + '...',
-      content_length: content.length,
-      category,
-      keywords_count: keywords.length,
-      has_image: !!image
-    });
+    console.log('✅ Données parsées avec succès');
 
-    // GÉNÉRATION DU SLUG
-    const slug = title
+    // Valider les données requises
+    if (!parsedBody?.title || parsedBody.title.length < 5) {
+      throw new Error('Le titre est requis et doit contenir au moins 5 caractères');
+    }
+    if (!parsedBody?.excerpt || parsedBody.excerpt.length < 20) {
+      throw new Error('L\'extrait est requis et doit contenir au moins 20 caractères');
+    }
+    if (!parsedBody?.content || parsedBody.content.length < 100) {
+      throw new Error('Le contenu est requis et doit contenir au moins 100 caractères');
+    }
+    if (!parsedBody?.category) {
+      throw new Error('La catégorie est requise');
+    }
+
+    // Créer le slug
+    const slug = parsedBody.title
       .toLowerCase()
       .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
-      .replace(/[^a-z0-9\s-]/g, '')
-      .replace(/\s+/g, '-')
-      .replace(/-+/g, '-')
-      .trim()
-      .substring(0, 100);
+      .replace(/[\u0300-\u036f]/g, '') // Supprimer les accents
+      .replace(/[^a-z0-9\s-]/g, '') // Garder seulement lettres, chiffres, espaces, tirets
+      .replace(/\s+/g, '-') // Remplacer espaces par tirets
+      .replace(/-+/g, '-') // Éviter les tirets multiples
+      .replace(/^-|-$/g, ''); // Supprimer tirets début/fin
 
-    const currentDate = new Date().toLocaleDateString('fr-FR', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric'
-    });
-
-    // CRÉATION DE L'OBJET BLOG POST
-    const blogPost: BlogPost = {
-      title,
-      excerpt,
-      content,
-      date: currentDate,
-      category,
-      keywords,
+    // Créer l'objet article
+    const newPost: BlogPost = {
+      title: parsedBody.title,
+      excerpt: parsedBody.excerpt,
+      content: parsedBody.content,
+      date: new Date().toLocaleDateString('fr-FR', { 
+        day: 'numeric', 
+        month: 'long', 
+        year: 'numeric' 
+      }),
+      category: parsedBody.category,
+      keywords: typeof parsedBody.keywords === 'string' 
+        ? parsedBody.keywords.split(',').map((k: string) => k.trim())
+        : Array.isArray(parsedBody.keywords) 
+        ? parsedBody.keywords 
+        : [],
       author: 'Agenzys',
       published: true,
-      slug,
-      ...(image && { image }),
-      ...(imageAlt && { imageAlt }),
+      slug: slug,
+      image: parsedBody.image || '',
+      imageAlt: parsedBody.imageAlt || ''
     };
 
-    console.log('💾 Tentative de commit sur GitHub...');
-    
-    // COMMIT SUR GITHUB
-    const commitResult = await commitToGitHub(blogPost);
-    
-    console.log('🎉 SUCCÈS - Article traité:', slug);
+    console.log('📝 Article créé:', {
+      title: newPost.title,
+      slug: newPost.slug,
+      content_length: newPost.content.length,
+      has_image: !!newPost.image
+    });
 
-    // TOUJOURS RETOURNER SUCCESS
+    // Publier sur GitHub
+    const commitResult = await commitToGitHub(newPost);
+    
     return NextResponse.json({
       success: true,
-      message: commitResult.simulated 
-        ? 'Article créé (simulé - configurez GITHUB_TOKEN pour publier)'
-        : 'Article publié avec succès sur le site',
-      slug: slug,
-      url: `https://agenzys.vercel.app/blog/${slug}`,
+      message: 'Article publié avec succès sur le site',
+      slug: newPost.slug,
+      url: `https://agenzys.vercel.app/blog/${newPost.slug}`,
       article: {
-        title: title,
-        slug: slug,
-        date: currentDate,
-        category: category,
-        excerpt: excerpt,
-        content_length: content.length,
-        has_image: !!image,
-        image: image,
-        imageAlt: imageAlt,
-        keywords: keywords
+        title: newPost.title,
+        slug: newPost.slug,
+        date: newPost.date,
+        category: newPost.category,
+        excerpt: newPost.excerpt.substring(0, 100) + (newPost.excerpt.length > 100 ? '...' : ''),
+        content_length: newPost.content.length,
+        has_image: !!newPost.image,
+        image: newPost.image,
+        imageAlt: newPost.imageAlt,
+        keywords: newPost.keywords
       },
       github_commit: commitResult
     });
 
   } catch (error) {
-    console.error('❌ Erreur:', error);
-    
-    // MÊME EN CAS D'ERREUR, ON RENVOIE UN SUCCÈS AVEC DES DONNÉES PAR DÉFAUT
-    const fallbackSlug = `article-${Date.now()}`;
+    console.error('❌ Erreur API Blog:', error);
     
     return NextResponse.json({
-      success: true,
-      message: 'Article créé avec données par défaut (parsing échoué)',
-      slug: fallbackSlug,
-      url: `https://agenzys.vercel.app/blog/${fallbackSlug}`,
-      article: {
-        title: 'Article automatique',
-        slug: fallbackSlug,
-        date: new Date().toLocaleDateString('fr-FR'),
-        category: 'automatisation',
-        excerpt: 'Article créé automatiquement via n8n',
-        content_length: 100,
-        has_image: false,
-        parsing_error: error instanceof Error ? error.message : 'Erreur inconnue'
-      }
-    });
+      success: false,
+      errors: [error instanceof Error ? error.message : "Erreur inconnue"]
+    }, { status: 400 });
   }
 }
 
 export async function GET() {
-  return NextResponse.json({ 
-    status: 'OK', 
-    message: 'API Blog Agenzys - Version GitHub Auto-Publish + Extraction Brutale',
-    timestamp: new Date().toISOString(),
-    github_configured: process.env.GITHUB_TOKEN !== 'your_github_token_here'
-  });
-}
-
-export async function OPTIONS() {
-  return new NextResponse(null, {
-    status: 200,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type',
+  return NextResponse.json({
+    message: 'API Blog Agenzys - Prêt pour recevoir vos articles !',
+    endpoints: {
+      POST: 'Créer un nouvel article de blog',
     },
+    version: '2.0',
+    status: 'active'
   });
 }
