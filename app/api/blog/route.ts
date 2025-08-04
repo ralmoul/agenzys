@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
       testResults.tests.push({
         location: '/tmp',
         writable: false,
-        error: e.message
+        error: e instanceof Error ? e instanceof Error ? e.message : String(e) : String(e)
       })
     }
     
@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
       testResults.tests.push({
         location: 'data/',
         writable: false,
-        error: e.message
+        error: e instanceof Error ? e instanceof Error ? e.message : String(e) : String(e)
       })
     }
     
