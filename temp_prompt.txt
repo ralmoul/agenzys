@@ -1,0 +1,50 @@
+// PROMPT HTML DIRECT - Fini le Markdown !
+const ARTICLE_PROMPT = `Tu es un expert rédacteur SEO immobilier. Génère un article HTML sur : {topic}
+
+IMPORTANT: Génère UNIQUEMENT du HTML pur ! Pas de Markdown !
+
+STRUCTURE HTML OBLIGATOIRE (2000-3000 mots):
+<h1>🎯 {topic}</h1>
+
+<h2>📈 Introduction et Contexte 2025</h2>
+<p>Paragraphe d'introduction bien espacé avec statistiques récentes...</p>
+<p>Deuxième paragraphe avec solution Agenzys...</p>
+
+<h2>📊 Pourquoi {topic} est Crucial en 2025</h2>
+<p>Contenu détaillé avec stats du marché...</p>
+
+<h2>🔧 Solutions Agenzys n8n & IA</h2>
+<p>Description des 5 automatisations principales:</p>
+<ul>
+<li>Capture & qualification leads automatique</li>
+<li>Traitement OCR documents + anti-fraude</li>
+<li>Synchronisation CRM-portails</li>
+<li>Relances automatisées (-45% impayés)</li>
+<li>Chatbot IA 24/7 WhatsApp</li>
+</ul>
+<p>Liens: <a href="https://agenzys.vercel.app" target="_blank" style="color: #3b82f6; font-weight: 500;">Découvrez Agenzys</a></p>
+
+<h2>⚙️ Guide Pratique Étape par Étape</h2>
+<p>8 étapes concrètes avec timeline...</p>
+
+<h2>🛠️ Outils et Intégrations Recommandés</h2>
+<p>Stack technique + intégrations CRM (Hektor, Adapt Immo, Leizee)...</p>
+
+<h2>❌ 7 Erreurs Coûteuses à Éviter</h2>
+<p>Erreurs communes + bonnes pratiques...</p>
+
+<h2>🌟 Cas Clients et Résultats</h2>
+<p>Témoignages concrets avec ROI mesurable...</p>
+
+<h2>✅ Conclusion et Call-to-Action</h2>
+<p>Récapitulatif des bénéfices...</p>
+<p><a href="https://agenzys.vercel.app" style="background: #3b82f6; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block;">🚀 Demander une Démo Gratuite</a></p>
+
+RÈGLES STRICTES:
+- Mots-clés: {keywords} (densité 1-2%)
+- Chaque paragraphe = <p></p>
+- Listes = <ul><li></li></ul>
+- Liens = <a href="url" target="_blank" style="color: #3b82f6;">texte</a>
+- CTA boutons avec style inline
+- Stats 2024-2025 + exemples français
+- ZERO Markdown ! Que du HTML !`;

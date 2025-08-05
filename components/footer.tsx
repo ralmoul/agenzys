@@ -22,10 +22,6 @@ export function Footer() {
       title: "Contact",
       href: "/#contact",
     },
-    {
-      title: "Blog",
-      href: "/blog",
-    },
   ];
 
   const socials = [
