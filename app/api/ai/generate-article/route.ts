@@ -26,7 +26,7 @@ const ARTICLE_TOPICS = [
 ];
 
 // PROMPT HTML DIRECT - Plus jamais de Markdown !
-const ARTICLE_PROMPT = \`Tu es un expert rédacteur SEO immobilier. Génère un article HTML sur : {topic}
+const ARTICLE_PROMPT = `Tu es un expert rédacteur SEO immobilier. Génère un article HTML sur : {topic}
 
 🚨 IMPORTANT: Génère UNIQUEMENT du HTML pur ! Pas de Markdown !
 
@@ -68,9 +68,9 @@ RÈGLES:
 - Chaque paragraphe = <p></p>
 - Listes = <ul><li></li></ul>
 - Liens stylés avec couleur #3b82f6
-- ZERO Markdown ! QUE du HTML !\`;
+- ZERO Markdown ! QUE du HTML !`;
 
-async function generateArticleContent(topicData) {
+async function generateArticleContent(topicData: any) {
   try {
     if (!openai) {
       throw new Error('OpenAI not configured');
@@ -98,7 +98,7 @@ async function generateArticleContent(topicData) {
       category: topicData.category,
       keywords: topicData.keywords,
       image: "/images/blog/default-immobilier.jpg",
-      imageAlt: \`Guide \${topicData.title}\`,
+      imageAlt: `Guide ${topicData.title}`,
       generation_method: "GPT-4 HTML Direct",
       type: topicData.type
     };
@@ -107,19 +107,19 @@ async function generateArticleContent(topicData) {
     console.error('[AI] Erreur:', error);
     return {
       title: topicData.title,
-      content: \`<h1>🎯 \${topicData.title}</h1><h2>📈 Introduction</h2><p>Article en cours de génération...</p>\`,
+      content: `<h1>🎯 ${topicData.title}</h1><h2>📈 Introduction</h2><p>Article en cours de génération...</p>`,
       excerpt: topicData.excerpt,
       category: topicData.category,
       keywords: topicData.keywords,
       image: "/images/blog/default-immobilier.jpg",
-      imageAlt: \`Illustration \${topicData.title}\`,
+      imageAlt: `Illustration ${topicData.title}`,
       generation_method: "Fallback HTML",
       type: topicData.type
     };
   }
 }
 
-export async function POST(request) {
+export async function POST(request: Request) {
   try {
     const apiKey = request.headers.get('x-api-key');
     if (apiKey !== 'agenzys_admin_key_2025_secure') {
@@ -139,7 +139,7 @@ export async function POST(request) {
   } catch (error) {
     return NextResponse.json({
       success: false,
-      error: error.message
+      error: error instanceof Error ? error.message : 'Une erreur est survenue'
     }, { status: 500 });
   }
 }
