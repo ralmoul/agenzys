@@ -37,7 +37,7 @@ STRUCTURE HTML OBLIGATOIRE:
 <p>Paragraphe d'introduction bien espacé avec statistiques récentes...</p>
 <p>Solution Agenzys avec <a href="https://agenzys.vercel.app" target="_blank" style="color: #3b82f6;">lien cliquable</a>.</p>
 
-<h2>�� Pourquoi {topic} est Crucial</h2>
+<h2>🔍 Pourquoi {topic} est Crucial</h2>
 <p>Analyse détaillée avec stats 2024-2025...</p>
 
 <h2>🔧 Solutions Agenzys n8n & IA</h2>
