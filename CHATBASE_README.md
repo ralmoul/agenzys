@@ -123,3 +123,4 @@ En cas de problème :
 ---
 
 ✅ **Installation terminée !** Votre chatbot Chatbase est maintenant opérationnel sur Agenzys.
+

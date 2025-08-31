@@ -4,7 +4,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
-import ChatbaseInit from "@/components/chatbase-init";
+import WhatsAppButton from "@/components/whatsapp-button";
 
 
 const inter = Inter({ subsets: ["latin"] });
@@ -40,51 +40,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark">
-      <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function(){
-                if(!window.chatbase||window.chatbase("getState")!=="initialized"){
-                  window.chatbase=(...arguments)=>{
-                    if(!window.chatbase.q){
-                      window.chatbase.q=[]
-                    }
-                    window.chatbase.q.push(arguments)
-                  };
-                  window.chatbase=new Proxy(window.chatbase,{
-                    get(target,prop){
-                      if(prop==="q"){
-                        return target.q
-                      }
-                      return(...args)=>target(prop,...args)
-                    }
-                  })
-                }
-                const onLoad=function(){
-                  const script=document.createElement("script");
-                  script.src="https://www.chatbase.co/embed.min.js";
-                  script.id="Px45w8Wrw12r_qvx-bPNr";
-                  script.domain="www.chatbase.co";
-                  document.body.appendChild(script)
-                };
-                if(document.readyState==="complete"){
-                  onLoad()
-                }else{
-                  window.addEventListener("load",onLoad)
-                }
-              })();
-            `,
-          }}
-        />
-      </head>
+      <head></head>
       <body
         className={cn("antialiased bg-black", inter.className)}
       >
         <Navbar />
         {children}
         <Footer />
-        <ChatbaseInit />
+        <WhatsAppButton />
 
       </body>
     </html>

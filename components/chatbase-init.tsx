@@ -38,3 +38,4 @@ export function ChatbaseInit({ userId, userEmail, userName }: ChatbaseInitProps)
 }
 
 export default ChatbaseInit;
+
